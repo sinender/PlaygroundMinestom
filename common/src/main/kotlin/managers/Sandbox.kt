@@ -1,5 +1,6 @@
 package managers
 
+import action.Action
 import com.mongodb.client.model.Filters.eq
 import kotlinx.coroutines.flow.first
 import net.hollowcube.polar.AnvilPolar
@@ -9,6 +10,7 @@ import net.minestom.server.MinecraftServer
 import net.minestom.server.instance.InstanceContainer
 import net.minestom.server.instance.LightingChunk
 import net.sinender.utils.sandbox.createTemplatePlatform
+import org.bson.Document
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.codecs.pojo.annotations.BsonIgnore
 import org.bson.types.ObjectId
@@ -16,7 +18,7 @@ import java.nio.file.Path
 import java.util.*
 
 fun createSandbox(ownerUUID: String): Sandbox {
-    val sandbox = Sandbox(ObjectId(), UUID.randomUUID().toString(), ownerUUID)
+    val sandbox = Sandbox(ObjectId(), UUID.randomUUID().toString(), ownerUUID, mutableListOf())
     val instanceManager = MinecraftServer.getInstanceManager()
     val instanceContainer = instanceManager.createInstanceContainer()
 
@@ -34,6 +36,7 @@ data class Sandbox(
     val id: ObjectId,
     val sandboxUUID: String,
     val ownerUUID: String,
+    var actions: MutableList<Document>? = mutableListOf(),
 ) {
     var instance: InstanceContainer? = null
     suspend fun loadInstance() {
@@ -47,7 +50,6 @@ data class Sandbox(
             instanceContainer.setChunkSupplier(::LightingChunk)
             instance = instanceContainer
         }
-
     }
 }
 
