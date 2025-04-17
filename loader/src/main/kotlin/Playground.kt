@@ -2,6 +2,8 @@ package net.sinender.app
 
 import com.github.shynixn.mccoroutine.minestom.launch
 import commands.HousingCommands
+import managers.loadSandboxes
+import managers.loadedSandboxes
 import managers.startupDatabase
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
@@ -52,5 +54,7 @@ fun main() {
             "mongodb://localhost:27017",
             "test"
         )
+
+        loadSandboxes()
     }
 }

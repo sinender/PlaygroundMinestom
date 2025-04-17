@@ -10,6 +10,7 @@ dependencies {
     // Apply the kotlinx bundle of dependencies from the version catalog (`gradle/libs.versions.toml`).
     implementation(libs.minestom)
     implementation(libs.advemtureMinimessage)
+    implementation(libs.mongoKotlin)
     implementation("io.github.revxrsal:lamp.common:${libs.versions.lamp.get()}")
     implementation("io.github.revxrsal:lamp.minestom:${libs.versions.lamp.get()}")
 
