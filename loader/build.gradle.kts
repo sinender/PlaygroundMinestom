@@ -5,6 +5,9 @@ plugins {
 
     // Apply the Application plugin to add support for building an executable JVM application.
     application
+
+    // shading is needed for building a jar
+    id("com.gradleup.shadow") version "9.0.0-beta12"
 }
 
 dependencies {
@@ -23,5 +26,5 @@ dependencies {
 }
 
 application {
-    mainClass = "net.sinender.loader.PlaygroundKt"
+    mainClass = "net.sinender.app.PlaygroundKt"
 }
