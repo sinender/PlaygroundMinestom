@@ -1,13 +1,16 @@
 package action
 
-import action.actions.ChatMessage
+import action.actions.*
 import org.bson.Document
 
 enum class ActionEnum(
     val id: String,
     val clazz: Class<out Action>
 ) {
-    CHAT_MESSAGE("chat_action", ChatMessage::class.java)
+    CANCEL_EVENT("cancel_event", CancelEvent::class.java),
+    CHAT_MESSAGE("chat_action", ChatMessage::class.java),
+    ACTIONBAR("actionbar", ActionBar::class.java),
+    POTION_EFFECT("potion_effect", PotionEffect::class.java)
 
     ;
 

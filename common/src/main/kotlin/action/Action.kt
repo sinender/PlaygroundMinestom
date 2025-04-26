@@ -3,6 +3,7 @@ package action
 import managers.Sandbox
 import menu.MenuItem
 import net.minestom.server.entity.Player
+import net.minestom.server.event.Event
 import net.minestom.server.inventory.click.ClickType
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
@@ -21,20 +22,25 @@ open class Action(
         // Do nothing
     }
 
+    // this would work, right?
+    open fun execute(e: Event, player: Player, sandbox: Sandbox) {
+        // Do nothing
+    }
+
     fun createDisplayItem(): MenuItem {
         val builder = MenuItem(ItemStack.of(icon)) {
             // Will open the action editor
         }
         builder.name("<yellow>$name")
         builder.description(comment)
-        builder.info("<yellow>Settings", "")
-        for (property in properties) {
-            builder.info(property.displayName, property.value.toString())
-        }
         if (properties.isNotEmpty()) {
-            builder.action(ClickType.LEFT_CLICK, "click to edit")
+            builder.info("<yellow>Settings", "")
+            for (property in properties) {
+                builder.info(property.displayName, property.value.toString())
+            }
+            builder.action(ClickType.LEFT_CLICK, "to edit")
         }
-        builder.action(ClickType.RIGHT_CLICK, "click to remove")
+        builder.action(ClickType.RIGHT_CLICK, "to remove")
 
         return builder
     }
@@ -103,5 +109,9 @@ open class Action(
     fun property(property: ActionProperty<*>): Action {
         properties.add(property)
         return this
+    }
+
+    open fun requiresEvent(): Boolean {
+        return false
     }
 }
