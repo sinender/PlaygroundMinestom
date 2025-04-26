@@ -14,5 +14,5 @@
 2. Run the output JAR in `loader/build/libs/`
 
 ## Contributing
-Clone, run, be cool and do stuff :)
-Please use gitemojis for your git commit messages :)
+- Clone, run, be cool and do stuff :)
+- Please use gitemojis for your git commit messages :)
