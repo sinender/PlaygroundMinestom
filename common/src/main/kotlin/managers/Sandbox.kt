@@ -35,6 +35,8 @@ fun createSandbox(ownerUUID: String): Sandbox {
         ownerUUID = ownerUUID
     )
 
+    loadedSandboxes[sandbox.sandboxUUID] = sandbox
+
     sandbox.loadInstance(PolarLoader(AnvilPolar.anvilToPolar(Path.of("template_sandbox_world"))))
     sandbox.instance?.let { instance ->
         createTemplatePlatform(instance)
