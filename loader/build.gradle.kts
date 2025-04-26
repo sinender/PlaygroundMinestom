@@ -14,6 +14,7 @@ dependencies {
     // Project "loader" depends on project "utils". (Project paths are separated with ":", so ":utils" refers to the top-level "utils" project.)
     implementation(project(":utils"))
     implementation(project(":common"))
+    implementation(project(":lobby"))
 
     implementation(libs.minestom)
     implementation("io.github.revxrsal:lamp.common:${libs.versions.lamp.get()}")

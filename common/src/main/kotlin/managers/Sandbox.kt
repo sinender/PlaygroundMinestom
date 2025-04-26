@@ -102,6 +102,7 @@ data class Sandbox(
     }
 
     suspend fun save() {
+        saveInstance()
         val collection = database?.getCollection<Sandbox>("sandboxes") ?: return
         events = eventsList?.mapValues { (_, actions) ->
             actions.map { it.toDocument() }.toMutableList()

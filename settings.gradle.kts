@@ -24,5 +24,6 @@ plugins {
 include(":loader")
 include(":utils")
 include(":common")
+include(":lobby")
 
 rootProject.name = "PlaygroundMinestorm"

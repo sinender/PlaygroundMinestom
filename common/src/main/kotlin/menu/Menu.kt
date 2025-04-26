@@ -20,16 +20,16 @@ abstract class Menu(
 ) {
     protected var items = mutableMapOf<Int, MenuItem>()
     protected val slots: List<Int>
-        get() {
-            val slots = mutableListOf<Int>()
-            for (i in 1 until (type.size / 9) - 2) {
-                repeat(7) { j ->
-                    slots.add(i * 9 + 1 + j)
-                }
+
+    init {
+        slots = mutableListOf<Int>()
+        for (i in 1 until (type.size / 9) - 2) {
+            repeat(7) { j ->
+                slots.add(i * 9 + 1 + j)
             }
-            return slots
         }
-    protected val center get() = type.size / 2 - 5
+    }
+    protected val center get() = ((type.size / 9) / 2) * 9 - 5
 
     abstract fun setupItems(player: Player)
     fun getItem(slot: Int): MenuItem? = items[slot]

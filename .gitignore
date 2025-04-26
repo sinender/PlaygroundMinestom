@@ -168,3 +168,19 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,kotlin,gradle
+/.idea/compiler.xml
+/.idea/hotswap_agent.xml
+/.idea/kotlinc.xml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/modules/buildSrc/PlaygroundMinestorm.buildSrc.main.iml
+/.idea/modules/buildSrc/PlaygroundMinestorm.buildSrc.test.iml
+/.idea/modules/common/PlaygroundMinestorm.common.main.iml
+/.idea/modules/common/PlaygroundMinestorm.common.test.iml
+/.idea/modules/loader/PlaygroundMinestorm.loader.main.iml
+/.idea/modules/loader/PlaygroundMinestorm.loader.test.iml
+/.idea/modules/lobby/PlaygroundMinestorm.lobby.main.iml
+/.idea/modules/lobby/PlaygroundMinestorm.lobby.test.iml
+/.idea/modules/utils/PlaygroundMinestorm.utils.main.iml
+/.idea/modules/utils/PlaygroundMinestorm.utils.test.iml
+/.idea/vcs.xml

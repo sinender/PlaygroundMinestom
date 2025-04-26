@@ -2,6 +2,7 @@ package net.sinender.app
 
 import com.github.shynixn.mccoroutine.minestom.launch
 import commands.HousingCommands
+import createLobbyInstance
 import managers.loadSandboxes
 import managers.loadedSandboxes
 import managers.startupDatabase
@@ -24,24 +25,7 @@ fun main() {
     MojangAuth.init()
     // Register Events (set spawn instance, teleport player at spawn)
 
-    // Create the instance
-    val instanceManager = MinecraftServer.getInstanceManager()
-    val instanceContainer = instanceManager.createInstanceContainer()
-
-    //Essentially a void world
-    instanceContainer.setBlock(0, 1, 0, Block.BARRIER)
-    // Add an event callback to specify the spawning instance (and the spawn position)
-    val globalEventHandler = MinecraftServer.getGlobalEventHandler()
-    globalEventHandler.addListener(AsyncPlayerConfigurationEvent::class.java) { event ->
-        val player = event.player
-        event.spawningInstance = instanceContainer
-        player.respawnPoint = Pos(0.0, 3.0, 0.0)
-    }
-
-    globalEventHandler.addListener(PlayerMoveEvent::class.java) { event ->
-        if (event.instance != instanceContainer) return@addListener
-        event.isCancelled = true;
-    }
+    createLobbyInstance()
 
     // Start the server
     minecraftServer.start("0.0.0.0", 25565)

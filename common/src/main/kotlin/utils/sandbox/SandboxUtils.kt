@@ -28,11 +28,6 @@ fun createTemplatePlatform(instanceContainer: InstanceContainer) {
     }
 }
 
-suspend fun Sandbox.save() {
-    val collection = database?.getCollection<Sandbox>("sandboxes")
-    collection?.replaceOne(eq("sandboxUUID", this.sandboxUUID), this)
-}
-
 fun Sandbox.loadInstance(chunkLoader: IChunkLoader) {
     val instanceManager = MinecraftServer.getInstanceManager()
     val instanceContainer = instanceManager.createInstanceContainer()
