@@ -7,6 +7,7 @@ plugins {
 dependencies {
     // Apply the kotlinx bundle of dependencies from the version catalog (`gradle/libs.versions.toml`).
     implementation(project(":utils"))
+    implementation(project(":lobby"))
     implementation(libs.polar)
     implementation(libs.minestom)
     implementation(libs.mongoKotlin)

@@ -17,6 +17,7 @@ dependencies {
     implementation(project(":lobby"))
 
     implementation(libs.minestom)
+    implementation(libs.reflections)
     implementation("io.github.revxrsal:lamp.common:${libs.versions.lamp.get()}")
     implementation("io.github.revxrsal:lamp.minestom:${libs.versions.lamp.get()}")
 

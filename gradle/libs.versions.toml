@@ -4,8 +4,6 @@
 
 [versions]
 kotlin = "2.1.10"
-kotlinxDatetime = "0.6.1"
-kotlinxSerializationJSON = "1.7.2"
 kotlinxCoroutines = "1.8.1"
 minestom = "0366b58bfe"
 shadow = "8.3.0"
@@ -14,12 +12,10 @@ adventure = "4.12.0"
 polar = "1.14.0"
 mongodb = "4.10.1"
 mccoroutine = "2.21.0"
-minescreen = "latest"
+reflections = "0.10.2"
 
 [libraries]
 kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlinxDatetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
-kotlinxSerialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJSON" }
 kotlinxCoroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 minestom = { module = "net.minestom:minestom-snapshots", version.ref = "minestom" }
 advemtureMinimessage = { module = "net.kyori:adventure-text-minimessage", version.ref = "adventure" }
@@ -27,7 +23,7 @@ polar = { module = "dev.hollowcube:polar", version.ref = "polar" }
 mongoKotlin = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongodb" }
 mccoroutineMinestomApi = { module = "com.github.shynixn.mccoroutine:mccoroutine-minestom-api", version.ref = "mccoroutine" }
 mccoroutineMinestomCore = { module = "com.github.shynixn.mccoroutine:mccoroutine-minestom-core", version.ref = "mccoroutine" }
-minescreen = { module = "com.github.kiip1:MineScreen", version.ref = "minescreen" }
+reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
 
 [plugins]
 kotlinPluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
