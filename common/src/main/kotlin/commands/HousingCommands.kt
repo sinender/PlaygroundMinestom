@@ -65,7 +65,11 @@ class HousingCommands {
         for (event in EventType.entries) {
             node.addListener(event.clazz) { e: Event ->
                 sandbox.eventsList?.get(event.name)?.forEach { action ->
-                    action.execute(actor.asPlayer()!!, sandbox)
+                    if (action.requiresEvent()) {
+                        action.execute(e, actor.asPlayer()!!, sandbox)
+                    } else {
+                        action.execute(actor.asPlayer()!!, sandbox)
+                    }
                 }
             }
         }
