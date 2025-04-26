@@ -30,15 +30,19 @@ class PotionEffect: Action(
                 "amplifier",
                 "Amplifier",
                 "The amplifier (level) of the potion.",
-                1
+                1,
+                1,
+                255
             )
         )
         property(
             IntegerProperty(
                 "duration",
                 "Duration",
-                "How long the player has the effect.",
-                60
+                "How long the player has the effect. Use -1 to make the effect not expire.",
+                60,
+                -1,
+                1000000
             )
         )
     }
