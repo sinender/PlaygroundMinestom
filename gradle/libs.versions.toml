@@ -14,6 +14,7 @@ adventure = "4.12.0"
 polar = "1.14.0"
 mongodb = "4.10.1"
 mccoroutine = "2.21.0"
+minescreen = "latest"
 
 [libraries]
 kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -26,6 +27,7 @@ polar = { module = "dev.hollowcube:polar", version.ref = "polar" }
 mongoKotlin = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongodb" }
 mccoroutineMinestomApi = { module = "com.github.shynixn.mccoroutine:mccoroutine-minestom-api", version.ref = "mccoroutine" }
 mccoroutineMinestomCore = { module = "com.github.shynixn.mccoroutine:mccoroutine-minestom-core", version.ref = "mccoroutine" }
+minescreen = { module = "com.github.kiip1:MineScreen", version.ref = "minescreen" }
 
 [plugins]
 kotlinPluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

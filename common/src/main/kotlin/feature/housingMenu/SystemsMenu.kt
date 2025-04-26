@@ -1,5 +1,6 @@
 package feature.housingMenu
 
+import feature.events.EventActionsMenu
 import menu.Backable
 import menu.Menu
 import menu.menuItem
@@ -21,7 +22,7 @@ class SystemsMenu : Menu(
 
         addItem(
             10, menuItem(Material.COBWEB) {
-
+                EventActionsMenu().open(player)
             }.name("<green>Event Actions")
                 .description("")
                 .action(ClickType.LEFT_CLICK, "to edit")

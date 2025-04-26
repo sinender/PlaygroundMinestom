@@ -17,7 +17,6 @@ dependencies {
     implementation(libs.mccoroutineMinestomApi)
     implementation(libs.mccoroutineMinestomCore)
     implementation(libs.kotlinxCoroutines)
-
 }
 
 kotlin {

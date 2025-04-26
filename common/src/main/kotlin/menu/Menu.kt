@@ -10,6 +10,7 @@ import net.minestom.server.event.inventory.InventoryPreClickEvent
 import net.minestom.server.event.trait.InventoryEvent
 import net.minestom.server.inventory.Inventory
 import net.minestom.server.inventory.InventoryType
+import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.sinender.utils.colorize
 
@@ -18,6 +19,17 @@ abstract class Menu(
     val type: InventoryType,
 ) {
     protected var items = mutableMapOf<Int, MenuItem>()
+    protected val slots: List<Int>
+        get() {
+            val slots = mutableListOf<Int>()
+            for (i in 1 until (type.size / 9) - 2) {
+                repeat(7) { j ->
+                    slots.add(i * 9 + 1 + j)
+                }
+            }
+            return slots
+        }
+    protected val center get() = type.size / 2 - 5
 
     abstract fun setupItems(player: Player)
     fun getItem(slot: Int): MenuItem? = items[slot]
@@ -35,18 +47,29 @@ abstract class Menu(
         }
     }
 
-    fun updateItems(player: Player) {
-        setupItems(player)
-        items.forEach { (slot, item) ->
-            player.inventory.setItemStack(slot, item.build())
+    fun clearItems(player: Player) {
+        items.clear()
+
+        for (i in 0 until type.size - 1) {
+            player.openInventory?.setItemStack(i, ItemStack.AIR)
         }
     }
 
-    fun open(player: Player) {
+    open fun updateItems(player: Player) {
+        clearItems(player)
+
+        setupItems(player)
+        items.forEach { (slot, item) ->
+            player.openInventory?.setItemStack(slot, item.build())
+        }
+    }
+
+    open fun open(player: Player) {
         val inventory = Inventory(type, colorize(title))
+        player.openInventory(inventory)
         setupItems(player)
 
-        if (this is Backable && items[type.size - 5] == null) {
+        if (this is Backable && (items[type.size - 5] == null || items[type.size - 5]!!.item.isAir)) {
             val backable = this as Backable
             addItem(type.size - 5, menuItem(Material.ARROW) {
                 backable.back(player)
@@ -57,7 +80,7 @@ abstract class Menu(
             inventory.setItemStack(slot, item.build())
         }
 
-        player.openInventory(inventory)
+//        player.openInventory(inventory)
 
         var handler = MinecraftServer.getGlobalEventHandler();
         var node: EventNode<InventoryEvent>? = null;

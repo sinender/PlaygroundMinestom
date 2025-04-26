@@ -1,15 +1,24 @@
 package net.sinender.utils
 
 import net.kyori.adventure.text.Component
+import net.minestom.server.entity.Player
 import revxrsal.commands.minestom.actor.MinestomCommandActor
 
 fun MinestomCommandActor.send(message: String): Component {
+    return this.asPlayer()!!.send(message)
+}
+
+fun Player.send(message: String): Component {
     val msg: Component = colorize(message)
-    this.sendRawMessage(msg)
+    this.sendMessage(msg)
     return msg
 }
 
 fun MinestomCommandActor.info(message: String): Component {
+    return this.asPlayer()!!.info(message)
+}
+
+fun Player.info(message: String): Component {
     checkNotNull(primaryColor)
     val msg = colorize(
         "<color:" + brightness(
@@ -17,7 +26,7 @@ fun MinestomCommandActor.info(message: String): Component {
             ICON_BRIGHTNESS_FACTOR
         ).asHexString() + ">ℹ</color> <primary>" + message
     )
-    this.sendRawMessage(msg)
+    this.sendMessage(msg)
     return msg
 }
 
@@ -26,7 +35,7 @@ fun info(message: String): String {
     return "<color:" + brightness(primaryColor, ICON_BRIGHTNESS_FACTOR).asHexString() + ">ℹ</color> <primary>" + message
 }
 
-fun MinestomCommandActor.success(message: String): Component {
+fun Player.success(message: String): Component {
     checkNotNull(successColor)
     val msg = colorize(
         "<color:" + brightness(
@@ -34,11 +43,15 @@ fun MinestomCommandActor.success(message: String): Component {
             ICON_BRIGHTNESS_FACTOR
         ).asHexString() + ">⭐</color> <success>" + message
     )
-    this.sendRawMessage(msg)
+    this.sendMessage(msg)
     return msg
 }
 
-fun MinestomCommandActor.warning(message: String): Component {
+fun MinestomCommandActor.success(message: String): Component {
+    return this.asPlayer()!!.success(message)
+}
+
+fun Player.warning(message: String): Component {
     checkNotNull(warningColor)
     val msg = colorize(
         "<color:" + brightness(
@@ -46,11 +59,15 @@ fun MinestomCommandActor.warning(message: String): Component {
             ICON_BRIGHTNESS_FACTOR
         ).asHexString() + ">⚠</color> <warning>" + message
     )
-    this.sendRawMessage(msg)
+    this.sendMessage(msg)
     return msg
 }
 
-fun MinestomCommandActor.err(message: String): Component {
+fun MinestomCommandActor.warning(message: String): Component {
+    return this.asPlayer()!!.warning(message)
+}
+
+fun Player.err(message: String): Component {
     checkNotNull(errorColor)
     val msg = colorize(
         "<color:" + brightness(
@@ -58,6 +75,10 @@ fun MinestomCommandActor.err(message: String): Component {
             ICON_BRIGHTNESS_FACTOR
         ).asHexString() + ">❌</color> <error>" + message
     )
-    this.sendRawMessage(msg)
+    this.sendMessage(msg)
     return msg
+}
+
+fun MinestomCommandActor.err(message: String): Component {
+    return this.asPlayer()!!.err(message)
 }

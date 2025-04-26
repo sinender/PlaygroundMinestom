@@ -1,31 +1,31 @@
 package action.actions
 
 import action.Action
-import action.ActionProperty
-import action.PropertyType
+import action.ActionEnum
+import action.properties.StringProperty
 import managers.Sandbox
 import net.minestom.server.entity.Player
 import net.minestom.server.item.Material
 import net.sinender.utils.colorize
 
-data class ChatMessage(
-    var message: String = "<yellow>Hello World!"
-): Action(
-    "chat_action",
+class ChatMessage: Action(
+    ActionEnum.CHAT_MESSAGE,
     "Display Chat Message",
     "Sends a chat message to the player.",
     Material.PAPER
 ) {
     init {
         property(
-            ActionProperty("message")
-                .displayName("Message")
-                .type(PropertyType.STRING)
-                .value(message)
+             StringProperty(
+                "message",
+                "Message",
+                "The message to send to the player.",
+                "<yellow>Hello, world!"
+             )
         )
     }
 
     override fun execute(player: Player, sandbox: Sandbox) {
-        player.sendMessage(colorize(message))
+        player.sendMessage(colorize(getValue("message", String::class.java)?:""))
     }
 }

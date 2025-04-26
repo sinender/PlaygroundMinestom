@@ -46,7 +46,18 @@ fun main() {
     // Start the server
     minecraftServer.start("0.0.0.0", 25565)
 
-    val lamp = MinestomLamp.builder().build()
+    val lamp = MinestomLamp.builder()
+        .suggestionProviders() {
+            it.addProvider(String.javaClass) { context ->
+                for (sandbox in loadedSandboxes.values) {
+                    if (sandbox.sandboxUUID.startsWith(context.input().peekUnquotedString())) {
+                        return@addProvider listOf(sandbox.sandboxUUID)
+                    }
+                }
+                return@addProvider emptyList()
+            }
+        }
+        .build()
     lamp.register(HousingCommands())
 
     minecraftServer.launch {

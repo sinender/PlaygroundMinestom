@@ -9,13 +9,13 @@ import net.minestom.server.item.Material
 import org.bson.Document
 
 open class Action(
-    val id: String,
+    val enum: ActionEnum,
     val name: String,
     val description: String,
     val icon: Material
 ) {
     var comment = ""
-    val properties = mutableListOf<ActionProperty>()
+    val properties = mutableListOf<ActionProperty<*>>()
 
     open fun execute(player: Player, sandbox: Sandbox) {
         // Do nothing
@@ -27,7 +27,7 @@ open class Action(
         }
         builder.name("<yellow>$name")
         builder.description(comment)
-        builder.info("&eSettings", "")
+        builder.info("<yellow>Settings", "")
         for (property in properties) {
             builder.info(property.displayName, property.value.toString())
         }
@@ -53,11 +53,11 @@ open class Action(
 
     fun toDocument(): Document {
         val doc = Document()
-        doc["id"] = id
+        doc["id"] = enum.id
         doc["comment"] = comment
         val propertiesDoc = Document()
         properties.forEach {
-            propertiesDoc[it.id] = it.value
+            propertiesDoc[it.id] = it.toValue()
         }
         doc["properties"] = propertiesDoc
         return doc
@@ -67,25 +67,32 @@ open class Action(
         comment = doc.getString("comment")
         val propertiesDoc = doc.get("properties", Document::class.java)
         properties.forEach { prop ->
-            prop.value = propertiesDoc[prop.id]
+            prop.fromValue(propertiesDoc[prop.id])
             if (prop.value == null) return@forEach
-            this.javaClass.declaredFields.forEach { field ->
-                if (field.name == prop.id) {
-                    if (field.type.isEnum) {
-                        if (prop.value is String) {
-                            field.set(this, field.type.enumConstants.first { it.toString() == prop.value });
-                        } else {
-                            field.set(this, prop.value)
-                        }
-                        return@forEach
-                    }
-                    field.isAccessible = true
-                    field.set(this, prop.value)
-                }
-            }
         }
 
         return this
+    }
+
+    fun <V> getValue(key: String, clazz: Class<V>): V? {
+        require(!clazz.isInstance(ActionProperty::class.java)) { "Cannot use an ActionProperty as a class type" }
+        for (property in properties) {
+            if (property.id.equals(key)) {
+                return property.value as V?
+            }
+        }
+
+        return null
+    }
+
+
+    fun <V : ActionProperty<*>?> getProperty(id: String?, clazz: Class<V>): V? {
+        for (property in properties) {
+            if (property.id.equals(id) && property.javaClass === clazz) {
+                return property as V
+            }
+        }
+        return null
     }
 
     fun comment(comment: String): Action {
@@ -93,34 +100,8 @@ open class Action(
         return this
     }
 
-    fun property(property: ActionProperty): Action {
+    fun property(property: ActionProperty<*>): Action {
         properties.add(property)
         return this
     }
-}
-
-data class ActionProperty(
-    val id: String,
-    var displayName: String = "",
-    var type: PropertyType = PropertyType.STRING,
-    var value: Any? = null
-) {
-    fun displayName(displayName: String): ActionProperty {
-        this.displayName = displayName
-        return this
-    }
-
-    fun type(type: PropertyType): ActionProperty {
-        this.type = type
-        return this
-    }
-
-    fun value(value: Any): ActionProperty {
-        this.value = value
-        return this
-    }
-}
-
-enum class PropertyType {
-    STRING, INT, DOUBLE, BOOLEAN
 }

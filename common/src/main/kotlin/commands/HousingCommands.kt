@@ -1,6 +1,7 @@
 package commands
 
 import feature.events.EventType
+import feature.housingMenu.PlaygroundMenu
 import managers.*
 import net.hollowcube.polar.PolarLoader
 import net.hollowcube.polar.PolarWriter
@@ -78,13 +79,18 @@ class HousingCommands {
         actor.requirePlayer()
         loadedSandboxes.filter { it.value.instance == actor.asPlayer()!!.instance }.forEach {
             actor.success("Sandbox ID: ${it.key}")
-            it.value.eventsList?.forEach { (type, actions) ->
-                actor.success("Event: $type")
-                actions.forEach { action ->
-                    action.execute(actor.asPlayer()!!, it.value)
-                }
+            PlaygroundMenu().open(actor.asPlayer()!!)
+        }
+    }
 
-            }
+    @Command("housing save")
+    suspend fun save(actor: MinestomCommandActor) {
+        actor.requirePlayer()
+        val sandbox = loadedSandboxes.filter { it.value.instance == actor.asPlayer()!!.instance }
+        if (sandbox.isEmpty()) return actor.error("You are not in a sandbox instance.")
+        sandbox.forEach {
+            it.value.save();
+            actor.success("Sandbox instance <dark_gray>(ID: ${it.key})</dark_gray> has been saved!")
         }
     }
 

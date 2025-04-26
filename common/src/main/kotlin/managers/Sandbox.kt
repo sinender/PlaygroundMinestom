@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.toList
 import net.hollowcube.polar.AnvilPolar
 import net.hollowcube.polar.PolarLoader
 import net.hollowcube.polar.PolarReader
+import net.hollowcube.polar.PolarWriter
 import net.minestom.server.entity.Player
 import net.minestom.server.instance.InstanceContainer
 import org.bson.Document
@@ -64,12 +65,7 @@ data class Sandbox(
 ) {
     var instance: InstanceContainer? = null
 
-    val eventsList: MutableMap<String, MutableList<Action>>?
-        get() = events?.mapValues { (_, documents) ->
-            documents.mapNotNull { doc ->
-                ActionEnum.fromId(doc.getString("id"))?.fromDocument(doc)
-            }.toMutableList()
-        }?.toMutableMap()
+    var eventsList: MutableMap<String, MutableList<Action>>? = mutableMapOf()
 
     /**
      * Loads the instance data from database
@@ -79,6 +75,38 @@ data class Sandbox(
         collection.find<SandboxInstance>(eq("sandboxUUID", sandboxUUID)).first().let { sbInstance ->
             this.loadInstance(PolarLoader(PolarReader.read(sbInstance.instanceArray)))
         }
+
+        eventsList = events?.mapValues { (_, documents) ->
+            documents.mapNotNull { doc ->
+                ActionEnum.fromId(doc.getString("id"))?.fromDocument(doc)
+            }.toMutableList()
+        }?.toMutableMap()
+    }
+
+    /**
+     * Saves the instance data to database
+     */
+    suspend fun saveInstance() {
+        val collection = database?.getCollection<SandboxInstance>("sandboxInstances") ?: return
+        instance?.saveChunksToStorage()
+            ?: return // Ensure instance is not null before saving
+        val chunkLoader = instance?.chunkLoader
+            ?: return // Ensure chunk loader is not null before saving
+        val instanceArray = PolarWriter.write((chunkLoader as PolarLoader).world())
+        val sandboxInstance = SandboxInstance(
+            sandboxId = id,
+            sandboxUUID = sandboxUUID,
+            instanceArray = instanceArray
+        )
+        collection.replaceOne(eq("sandboxUUID", sandboxUUID), sandboxInstance)
+    }
+
+    suspend fun save() {
+        val collection = database?.getCollection<Sandbox>("sandboxes") ?: return
+        events = eventsList?.mapValues { (_, actions) ->
+            actions.map { it.toDocument() }.toMutableList()
+        }?.toMutableMap()
+        collection.replaceOne(eq("sandboxUUID", sandboxUUID), this)
     }
 }
 
