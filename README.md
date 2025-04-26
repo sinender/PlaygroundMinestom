@@ -1,13 +1,17 @@
 # PlaygroundMinestom
 
-Uses git modules:
-- Loader: contains the main file to start the server
-- Common: the folder with basically everything in it, should really be called minestorm, but meh
-- Utils: has some random utility classes for random stuff that does random things :)
+## Project Structure
+- `loader`: contains the main file to start the server
+- `common`: the folder with basically everything in it, should really be called minestom, but meh
+- `utils`: has some random utility classes for random stuff that does random things :)
 
-How to run:
-- Make sure you have mongodb running locally
-- Navigate to /loader/src/main/kotlin/Playground.kt and run said file
+## Running the project
+1. Make sure you have mongodb running locally
+2. Navigate to /loader/src/main/kotlin/Playground.kt and run said file
 
-How to contribute:
-- Clone, run, be cool and do stuff :)
+**OR**
+1. In terminal: `./gradlew :loader:shadowJar`
+2. Run the output JAR in `loader/build/libs/`
+
+## Contributing
+Clone, run, be cool and do stuff :)
