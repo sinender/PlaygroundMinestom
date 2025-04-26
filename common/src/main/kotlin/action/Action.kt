@@ -32,9 +32,9 @@ open class Action(
             builder.info(property.displayName, property.value.toString())
         }
         if (properties.isNotEmpty()) {
-            builder.action(ClickType.LEFT_CLICK, "click to edit")
+            builder.action(ClickType.LEFT_CLICK, "to edit")
         }
-        builder.action(ClickType.RIGHT_CLICK, "click to remove")
+        builder.action(ClickType.RIGHT_CLICK, "to remove")
 
         return builder
     }
