@@ -5,6 +5,7 @@ plugins {
 
     // Apply the Application plugin to add support for building an executable JVM application.
     application
+    libs.plugins.shadowPlugin
 }
 
 dependencies {
@@ -23,5 +24,5 @@ dependencies {
 }
 
 application {
-    mainClass = "net.sinender.loader.PlaygroundKt"
+    mainClass = "net.sinender.app.PlaygroundKt"
 }
