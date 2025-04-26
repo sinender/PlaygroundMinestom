@@ -2,16 +2,14 @@ package feature.actionMenu
 
 import PaginationList
 import action.Action
-import menu.Backable
-import menu.Menu
-import menu.MenuItem
-import menu.PaginationMenu
+import menu.*
 import net.minestom.server.entity.Player
 import net.minestom.server.inventory.InventoryType
 import net.minestom.server.inventory.click.ClickType
+import net.minestom.server.item.Material
 
 class ActionsMenu(
-    private val actions: MutableList<Action>,
+    val actions: MutableList<Action>,
     private val backMenu: Menu
 ): PaginationMenu(
     "Actions",
@@ -19,6 +17,10 @@ class ActionsMenu(
 ), Backable {
     override fun setupItems(player: Player) {
         super.setupItems(player)
+
+        super.addItem(50, menuItem(Material.PAPER) {
+            AddActionMenu(this).open(player)
+        }.name("<green>Add Action"))
     }
 
     override fun paginationList(player: Player): PaginationList<MenuItem> {
