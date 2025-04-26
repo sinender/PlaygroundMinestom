@@ -15,4 +15,4 @@
 
 ## Contributing
 - Clone, run, be cool and do stuff :)
-- Please use gitemojis for your git commit messages :)
+- Please use [gitmojis](https://plugins.jetbrains.com/plugin/12383-gitmoji-plus-commit-button) for your git commit messages :)
