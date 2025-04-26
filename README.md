@@ -15,3 +15,4 @@
 
 ## Contributing
 Clone, run, be cool and do stuff :)
+Please use gitemojis for your git commit messages :)
