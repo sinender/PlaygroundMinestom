@@ -32,5 +32,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ${{ github.event.repository.name }}
-        path: loader/builds/libs/
+        path: loader/build/libs/
         retention-days: 7
