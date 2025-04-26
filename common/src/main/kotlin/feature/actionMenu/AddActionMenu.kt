@@ -12,11 +12,12 @@ class AddActionMenu(
 ): PaginationMenu("Add Action"), Backable {
     override fun paginationList(player: Player): PaginationList<MenuItem> {
         val menuItems = ArrayList<MenuItem>()
-        for (action in ActionEnum.entries) {
+        for (entry in ActionEnum.entries) {
             // why is this the only way i can find to create the item
-            val item = action.clazz.getDeclaredConstructor().newInstance().createAddDisplayItem()
+            val action = entry.clazz.getDeclaredConstructor().newInstance()
+            val item = action.createAddDisplayItem()
             item.action = {
-                backMenu.actions.add(action.clazz.getDeclaredConstructor().newInstance())
+                backMenu.actions.add(action)
                 backMenu.open(player)
             }
             menuItems.add(item)
