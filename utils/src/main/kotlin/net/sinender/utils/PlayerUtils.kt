@@ -2,10 +2,12 @@ package net.sinender.utils
 
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.minestom.server.MinecraftServer
+import net.minestom.server.coordinate.Pos
 import net.minestom.server.entity.Player
 import net.minestom.server.event.EventListener
 import net.minestom.server.event.player.PlayerChatEvent
 import net.minestom.server.event.player.PlayerCommandEvent
+import net.minestom.server.instance.Instance
 
 data class TempStorageForListener(
     var listener: EventListener<PlayerChatEvent>?,
@@ -52,4 +54,20 @@ fun Player.openChat(
 
     MinecraftServer.getGlobalEventHandler().addListener(listener)
     MinecraftServer.getGlobalEventHandler().addListener(listener2)
+}
+
+/**
+ * Teleports the player to the position if they are already in the instance instead of throwing an exception.
+ * @see Player.setInstance
+ * @see Player.teleport
+ */
+fun Player.setInstanceSafe(
+    instance: Instance,
+    position: Pos?
+) {
+    if (this.instance == instance) {
+        this.teleport(position ?: this.position)
+    } else {
+        this.setInstance(instance, position ?: this.position)
+    }
 }
