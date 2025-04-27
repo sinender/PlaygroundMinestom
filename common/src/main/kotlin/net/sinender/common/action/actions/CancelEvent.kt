@@ -1,5 +1,6 @@
 package net.sinender.common.action.actions
 
+import net.minestom.server.entity.Entity
 import net.sinender.common.action.Action
 import net.sinender.common.action.ActionEnum
 import net.sinender.common.managers.Sandbox
@@ -14,8 +15,9 @@ class CancelEvent: Action(
     "Stops an event from executing.",
     Material.TNT
 ) {
-    override fun execute(e: Event, player: Player, sandbox: Sandbox) {
-        val cancellableEvent: CancellableEvent = e as CancellableEvent
+
+    override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+        val cancellableEvent: CancellableEvent = event as CancellableEvent
         cancellableEvent.isCancelled = true
     }
 

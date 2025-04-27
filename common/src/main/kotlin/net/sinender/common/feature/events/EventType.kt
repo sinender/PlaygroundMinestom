@@ -11,7 +11,13 @@ enum class EventType(
     val clazz: Class<out PlayerEvent>,
     val menuItem: MenuItem,
 ) {
-    BLOCK_BREAK(PlayerBlockBreakEvent::class.java, createMenuItem(Material.DIAMOND_PICKAXE, "Block Break", "a block is broken by a player")),
+    BLOCK_BREAK(PlayerBlockBreakEvent::class.java,
+        net.sinender.common.feature.npc.events.createMenuItem(
+            Material.DIAMOND_PICKAXE,
+            "Block Break",
+            "a block is broken by a player"
+        )
+    ),
 
     ;
 }

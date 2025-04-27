@@ -1,26 +1,26 @@
 package net.sinender.common.commands
 
-import net.sinender.common.feature.events.EventType
 import net.sinender.common.feature.housingMenu.PlaygroundMenu
 import net.sinender.common.managers.*
 import net.hollowcube.polar.PolarLoader
 import net.hollowcube.polar.PolarWriter
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
-import net.minestom.server.entity.GameMode
-import net.minestom.server.event.Event
+import net.minestom.server.entity.*
 import net.minestom.server.event.EventFilter
-import net.minestom.server.event.EventListener
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.trait.PlayerEvent
+import net.sinender.common.feature.events.EventType
+import net.sinender.common.feature.npc.npcs.PlayerNpc
 import net.sinender.utils.success
 import revxrsal.commands.annotation.Command
 import revxrsal.commands.minestom.actor.MinestomCommandActor
-import java.util.*
+import java.time.Duration
+import java.time.temporal.ChronoUnit
 
 
-class HousingCommands: CommandInstance {
-    @Command("housing create")
+class HousingCommands : CommandInstance {
+    @Command("playground create")
     suspend fun housing(actor: MinestomCommandActor) {
         actor.requirePlayer()
 
@@ -44,12 +44,12 @@ class HousingCommands: CommandInstance {
         actor.success("You have been teleported to your sandbox instance!")
     }
 
-    @Command("housing goto <id>")
+    @Command("playground goto <id>")
     suspend fun goto(actor: MinestomCommandActor, id: String) {
         actor.requirePlayer()
 
         val sandbox = loadedSandboxes[id] ?: return actor.error("That sandbox does not exist.")
-        sandbox.loadInstance()
+        if (sandbox.instance == null) sandbox.loadInstance()
         if (sandbox.instance == null) return actor.error("An error occurred while teleporting to your sandbox.")
         actor.asPlayer()!!.setInstance(sandbox.instance!!, Pos(0.0, 61.0, 0.0))
         actor.asPlayer()!!.gameMode = GameMode.CREATIVE
@@ -62,13 +62,9 @@ class HousingCommands: CommandInstance {
         }
         handler.addChild(node)
         for (event in EventType.entries) {
-            node.addListener(event.clazz) { e: Event ->
+            node.addListener(event.clazz) { e: PlayerEvent ->
                 sandbox.eventsList?.get(event.name)?.forEach { action ->
-                    if (action.requiresEvent()) {
-                        action.execute(e, actor.asPlayer()!!, sandbox)
-                    } else {
-                        action.execute(actor.asPlayer()!!, sandbox)
-                    }
+                    action.execute(e.player, e.player, sandbox, e)
                 }
             }
         }
@@ -77,8 +73,8 @@ class HousingCommands: CommandInstance {
         actor.success("You have been teleported to sandbox instance <dark_gray>(ID: ${id})</dark_gray>!")
     }
 
-    @Command("housing test")
-    fun test(actor: MinestomCommandActor) {
+    @Command("playground menu")
+    fun menu(actor: MinestomCommandActor) {
         actor.requirePlayer()
         loadedSandboxes.filter { it.value.instance == actor.asPlayer()!!.instance }.forEach {
             actor.success("Sandbox ID: ${it.key}")
@@ -86,7 +82,18 @@ class HousingCommands: CommandInstance {
         }
     }
 
-    @Command("housing save")
+    @Command("playground test")
+    fun test(actor: MinestomCommandActor) {
+        actor.requirePlayer()
+        loadedSandboxes.filter { it.value.instance == actor.asPlayer()!!.instance }.forEach {
+            PlayerNpc(
+                1,
+                actor.asPlayer()!!.position
+            ).spawn(it.value)
+        }
+    }
+
+    @Command("playground save")
     suspend fun save(actor: MinestomCommandActor) {
         actor.requirePlayer()
         val sandbox = loadedSandboxes.filter { it.value.instance == actor.asPlayer()!!.instance }

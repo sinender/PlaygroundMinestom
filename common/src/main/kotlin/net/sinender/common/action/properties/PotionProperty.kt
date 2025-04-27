@@ -9,9 +9,12 @@ import net.sinender.common.menu.PaginationMenu
 import net.minestom.server.entity.Player
 import net.minestom.server.event.inventory.InventoryPreClickEvent
 import net.minestom.server.inventory.click.ClickType
+import net.minestom.server.item.ItemComponent
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
+import net.minestom.server.item.component.PotionContents
 import net.minestom.server.potion.PotionEffect
+import net.minestom.server.potion.PotionType
 
 class PotionProperty (
     id: String,
@@ -25,7 +28,9 @@ class PotionProperty (
             override fun paginationList(player: Player): PaginationList<MenuItem> {
                 val menuItems = ArrayList<MenuItem>()
                 for (effect in PotionEffect.values()) {
-                    val builder = MenuItem(ItemStack.of(Material.POTION)) {
+                    val builder = MenuItem(ItemStack.of(Material.POTION)
+                        .with(ItemComponent.POTION_CONTENTS, PotionContents(PotionType.fromKey(effect.name())?: PotionType.WATER))
+                    ) {
                         if (event.clickType === ClickType.LEFT_CLICK) value = effect
                         actionEditMenu.open(player)
                     }

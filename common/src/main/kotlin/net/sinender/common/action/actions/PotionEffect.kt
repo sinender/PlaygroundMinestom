@@ -1,11 +1,13 @@
 package net.sinender.common.action.actions
 
+import net.minestom.server.entity.Entity
 import net.sinender.common.action.Action
 import net.sinender.common.action.ActionEnum
 import net.sinender.common.action.properties.IntegerProperty
 import net.sinender.common.action.properties.PotionProperty
 import net.sinender.common.managers.Sandbox
 import net.minestom.server.entity.Player
+import net.minestom.server.event.Event
 import net.minestom.server.item.Material
 import net.minestom.server.potion.Potion
 import net.minestom.server.potion.PotionEffect
@@ -47,12 +49,12 @@ class PotionEffect: Action(
         )
     }
 
-    override fun execute(player: Player, sandbox: Sandbox) {
+    override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
         val potion: Potion = Potion(
             getValue("potion", PotionEffect::class.java)!!,
             (getValue("amplifier", Int::class.java)!! - 1),
             (getValue("duration", Int::class.java)!! * 20))
 
-        player.addEffect(potion)
+        player?.addEffect(potion)
     }
 }
