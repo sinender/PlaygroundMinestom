@@ -13,6 +13,7 @@ import net.minestom.server.event.EventFilter
 import net.minestom.server.event.EventListener
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.trait.PlayerEvent
+import net.sinender.utils.setInstanceSafe
 import net.sinender.utils.success
 import revxrsal.commands.annotation.Command
 import revxrsal.commands.minestom.actor.MinestomCommandActor
@@ -51,7 +52,7 @@ class HousingCommands: CommandInstance {
         val sandbox = loadedSandboxes[id] ?: return actor.error("That sandbox does not exist.")
         sandbox.loadInstance()
         if (sandbox.instance == null) return actor.error("An error occurred while teleporting to your sandbox.")
-        actor.asPlayer()!!.setInstance(sandbox.instance!!, Pos(0.0, 61.0, 0.0))
+        actor.asPlayer()!!.setInstanceSafe(sandbox.instance!!, Pos(0.0, 61.0, 0.0))
         actor.asPlayer()!!.gameMode = GameMode.CREATIVE
         sandbox.save()
 
