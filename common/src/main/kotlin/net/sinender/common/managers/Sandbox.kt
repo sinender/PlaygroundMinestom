@@ -63,6 +63,7 @@ data class Sandbox(
     val sandboxUUID: String,
     val ownerUUID: String,
     var events: MutableMap<String, MutableList<Document>>? = mutableMapOf(),
+    var playerStats: MutableMap<String, MutableMap<String, String>>? = mutableMapOf()
 ) {
     var instance: InstanceContainer? = null
 

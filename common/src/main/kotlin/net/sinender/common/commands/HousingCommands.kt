@@ -13,6 +13,8 @@ import net.minestom.server.event.EventFilter
 import net.minestom.server.event.EventListener
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.trait.PlayerEvent
+import net.sinender.common.feature.stats.getStat
+import net.sinender.common.feature.stats.setStat
 import net.sinender.utils.setInstanceSafe
 import net.sinender.utils.success
 import revxrsal.commands.annotation.Command
@@ -83,7 +85,10 @@ class HousingCommands: CommandInstance {
         actor.requirePlayer()
         loadedSandboxes.filter { it.value.instance == actor.asPlayer()!!.instance }.forEach {
             actor.success("Sandbox ID: ${it.key}")
-            PlaygroundMenu().open(actor.asPlayer()!!)
+//            PlaygroundMenu().open(actor.asPlayer()!!)
+
+            actor.asPlayer()!!.setStat("another/test", "Hello, world!")
+            actor.success(actor.asPlayer()!!.getStat("another/test") ?: "not in sandbox")
         }
     }
 
