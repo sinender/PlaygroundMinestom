@@ -1,11 +1,12 @@
 package net.sinender.common.commands
 
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import net.minestom.server.MinecraftServer
 import net.sinender.common.feature.stats.getStat
 import net.sinender.common.feature.stats.listStats
 import net.sinender.common.managers.getSandbox
-import net.sinender.utils.err
-import net.sinender.utils.success
+import net.sinender.utils.*
 import revxrsal.commands.annotation.Command
 import revxrsal.commands.minestom.actor.MinestomCommandActor
 
@@ -20,11 +21,11 @@ class StatCommands: CommandInstance {
         }
 
         for (instance in MinecraftServer.getInstanceManager().instances) {
-            for (instancePlayer in instance.players) {
-                if (instancePlayer.username == player) {
-                    for (stat in instancePlayer.listStats(actor.asPlayer()!!.getSandbox())!!) {
-                        actor.success("$stat: " + instancePlayer.getStat(stat, actor.asPlayer()!!.getSandbox()))
-                    }
+            instance.players.filter { it.username == player }.forEach {
+                actor.success("${it.username}'s Stats:")
+                for (stat in it.listStats(actor.asPlayer()!!.getSandbox())!!) {
+                    actor.sendRawMessage(Component.text("   $stat: ", successColor!!)
+                            .append(Component.text(it.getStat(stat, actor.asPlayer()!!.getSandbox()) ?: "", NamedTextColor.WHITE)))
                 }
             }
         }
