@@ -1,5 +1,7 @@
 package net.sinender.common.feature.npc.events
 
+import io.github.togar2.pvp.events.PrepareAttackEvent
+import net.minestom.server.event.entity.EntityAttackEvent
 import net.minestom.server.event.entity.EntityDamageEvent
 import net.sinender.common.menu.MenuItem
 import net.sinender.common.menu.menuItem
@@ -13,9 +15,10 @@ import net.minestom.server.item.Material
 enum class NpcEventType(
     val clazz: Class<out EntityEvent>,
     val menuItem: MenuItem,
+    val cooldown: Int = 0
 ) {
-    INTERACT(PlayerEntityInteractEvent::class.java, createMenuItem(Material.BONE, "Interact", "a player has interacted (right clicked) with the NPC")),
-    ATTACK(EntityDamageEvent::class.java, createMenuItem(Material.DIAMOND_SWORD, "Attack", "an NPC has taken damage. This includes being attacked by a player or another entity")),
+    INTERACT(PlayerEntityInteractEvent::class.java, createMenuItem(Material.BONE, "Interact", "a player has interacted (right clicked) with the NPC"), 100),
+    ATTACK(PrepareAttackEvent::class.java, createMenuItem(Material.DIAMOND_SWORD, "Attack", "an NPC gets hit.")),
 
     ;
 }

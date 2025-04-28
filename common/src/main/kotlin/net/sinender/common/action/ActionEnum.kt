@@ -10,8 +10,8 @@ enum class ActionEnum(
     CANCEL_EVENT("cancel_event", CancelEvent::class.java),
     CHAT_MESSAGE("chat_action", ChatMessage::class.java),
     ACTIONBAR("actionbar", ActionBar::class.java),
-    POTION_EFFECT("potion_effect", PotionEffect::class.java)
-
+    POTION_EFFECT("potion_effect", PotionEffect::class.java),
+    DAMAGE("damage", DamageAction::class.java),
     ;
 
     companion object {

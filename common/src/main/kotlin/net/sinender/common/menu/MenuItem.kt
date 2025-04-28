@@ -59,6 +59,11 @@ class MenuItem (
         return this
     }
 
+    fun info(key: String): MenuItem {
+        info = info + (key to "")
+        return this
+    }
+
     fun glow(glow: Boolean): MenuItem {
         this.glow = glow
         return this

@@ -8,6 +8,7 @@ import net.sinender.common.managers.Sandbox
 import net.minestom.server.entity.Player
 import net.minestom.server.event.Event
 import net.minestom.server.item.Material
+import net.sinender.common.action.properties.string
 import net.sinender.utils.colorize
 
 class ChatMessage: Action(
@@ -28,6 +29,6 @@ class ChatMessage: Action(
     }
 
     override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
-        player?.sendMessage(colorize(getValue("message", String::class.java)?:""))
+        player?.sendMessage(colorize(properties.string("message") ?:""))
     }
 }

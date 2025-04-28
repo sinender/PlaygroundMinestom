@@ -26,5 +26,12 @@ class NpcEditMenu(
             .description("Click to edit npc event actions")
             .action(ClickType.LEFT_CLICK, "to edit")
         )
+        addItem(center + 9,
+            menuItem(Material.REDSTONE) {
+                NpcPropertiesMenu(npc, sandbox).open(player)
+            }.name("<green>Properties")
+                .description("Click to edit npc properties")
+                .action(ClickType.LEFT_CLICK, "to edit")
+        )
     }
 }

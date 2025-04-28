@@ -40,3 +40,9 @@ class IntegerProperty (
         }
     }
 }
+
+fun List<ActionProperty<*>>.integer(id: String): Int? {
+    return this.filter { it.id == id }
+        .map { it.value }
+        .firstOrNull() as? Int
+}

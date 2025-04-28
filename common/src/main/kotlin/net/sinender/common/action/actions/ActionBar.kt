@@ -15,6 +15,7 @@ import net.minestom.server.item.Material
 import net.sinender.common.action.Action
 import net.sinender.common.action.ActionEnum
 import net.sinender.common.action.properties.StringProperty
+import net.sinender.common.action.properties.string
 import net.sinender.common.managers.Sandbox
 import net.sinender.utils.colorize
 import java.time.Duration
@@ -39,6 +40,6 @@ class ActionBar: Action(
     }
 
     override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
-        player?.sendActionBar(colorize(getValue("message", String::class.java) ?: ""))
+        player?.sendActionBar(colorize(properties.string("message") ?: ""))
     }
 }

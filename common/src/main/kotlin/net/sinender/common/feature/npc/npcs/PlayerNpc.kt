@@ -15,6 +15,7 @@ import net.minestom.server.item.component.HeadProfile
 import net.minestom.server.network.packet.server.play.TeamsPacket
 import net.minestom.server.scoreboard.Team
 import net.sinender.common.action.properties.StringProperty
+import net.sinender.common.action.properties.string
 import net.sinender.common.feature.npc.NpcEntity
 import net.sinender.common.managers.Sandbox
 import net.sinender.common.menu.MenuItem
@@ -48,7 +49,7 @@ class PlayerNpc(
 
     override fun distinctMenuItem(): MenuItem {
         val skinFromUUID =
-            PlayerSkin.fromUuid(properties[0].value as String) ?: PlayerSkin.fromUsername(removeColor(name)) ?: return super.distinctMenuItem()
+            PlayerSkin.fromUuid(properties.string("skin")!!) ?: PlayerSkin.fromUsername(removeColor(name)) ?: return super.distinctMenuItem()
         return super.distinctMenuItem()
             .itemStack(
                 ItemStack.of(Material.PLAYER_HEAD)
@@ -58,7 +59,7 @@ class PlayerNpc(
 
     override fun spawn(sandbox: Sandbox) {
         val skinFromUUID =
-            PlayerSkin.fromUuid(properties[0].value as String) ?: PlayerSkin.fromUsername(removeColor(name)) ?: return
+            PlayerSkin.fromUuid(properties.string("skin")!!) ?: PlayerSkin.fromUsername(removeColor(name)) ?: return
         val player = PlaybackPlayer(
             name,
             skinFromUUID.textures(),

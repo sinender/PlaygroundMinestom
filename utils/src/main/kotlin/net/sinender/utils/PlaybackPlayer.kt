@@ -21,7 +21,6 @@ class PlaybackPlayer(
 ) : EntityCreature(EntityType.PLAYER) {
 
     init {
-        setNoGravity(true)
     }
 
     override fun updateNewViewer(player: Player) {
@@ -41,7 +40,6 @@ class PlaybackPlayer(
             1
         )
         player.sendPacket(PlayerInfoUpdatePacket(PlayerInfoUpdatePacket.Action.ADD_PLAYER, entry))
-        setNoGravity(true)
         // Spawn the player entity
         super.updateNewViewer(player)
         // Enable skin layers
