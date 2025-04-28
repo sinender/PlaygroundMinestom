@@ -30,4 +30,20 @@ class StatCommands: CommandInstance {
             }
         }
     }
+
+    @Command("viewglobalstats")
+    fun viewGlobalStats(actor: MinestomCommandActor) {
+        actor.requirePlayer()
+
+        if (actor.asPlayer()!!.getSandbox() == null) {
+            actor.err("You need to be in a sandbox instance!")
+            return
+        }
+
+        actor.success("Global Stats:")
+        for (stat in actor.asPlayer()!!.getSandbox()!!.listStats()) {
+            actor.sendRawMessage(Component.text("   $stat: ", successColor!!)
+                .append(Component.text(actor.asPlayer()!!.getSandbox()!!.getStat(stat) ?: "", NamedTextColor.WHITE)))
+        }
+    }
 }

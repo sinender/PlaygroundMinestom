@@ -11,7 +11,8 @@ enum class ActionEnum(
     CHAT_MESSAGE("chat_action", ChatMessage::class.java),
     ACTIONBAR("actionbar", ActionBar::class.java),
     POTION_EFFECT("potion_effect", PotionEffect::class.java),
-    PLAYER_STAT("player_stat", PlayerStat::class.java)
+    PLAYER_STAT("player_stat", PlayerStat::class.java),
+    GLOBAL_STAT("global_stat", GlobalStat::class.java)
 
     ;
 
