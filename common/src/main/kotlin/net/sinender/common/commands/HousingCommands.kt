@@ -85,10 +85,10 @@ class HousingCommands: CommandInstance {
         actor.requirePlayer()
         loadedSandboxes.filter { it.value.instance == actor.asPlayer()!!.instance }.forEach {
             actor.success("Sandbox ID: ${it.key}")
-//            PlaygroundMenu().open(actor.asPlayer()!!)
+            PlaygroundMenu().open(actor.asPlayer()!!)
 
-            actor.asPlayer()!!.setStat("another/test", "Hello, world!")
-            actor.success(actor.asPlayer()!!.getStat("another/test") ?: "not in sandbox")
+//            actor.success(actor.asPlayer()!!.getStat("Kills") ?: "not in sandbox")
+//            actor.success(actor.asPlayer()!!.getStat("NotKills") ?: "not in sandbox")
         }
     }
 
