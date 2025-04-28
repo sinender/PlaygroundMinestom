@@ -15,3 +15,9 @@ fun Player.setStat(key: String, value: String, sandbox: Sandbox? = this.getSandb
     val playerStats = sandbox.playerStats!!.getOrPut(this.uuid.toString()) { mutableMapOf() }
     playerStats[key] = value
 }
+
+fun Player.listStats(sandbox: Sandbox? = this.getSandbox()): Set<String>? {
+    if (sandbox == null) return null
+    val playerStats = sandbox.playerStats!!.getOrPut(this.uuid.toString()) { mutableMapOf() }
+    return playerStats.keys.toSet()
+}
