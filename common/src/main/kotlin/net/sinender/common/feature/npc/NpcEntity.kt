@@ -6,17 +6,19 @@ import net.minestom.server.entity.EntityCreature
 import net.minestom.server.entity.EntityType
 import net.minestom.server.entity.ai.GoalSelector
 import net.minestom.server.entity.ai.TargetSelector
-import net.minestom.server.entity.metadata.golem.IronGolemMeta
 import net.minestom.server.event.EventFilter
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.player.PlayerEntityInteractEvent
-import net.minestom.server.event.trait.EntityEvent
+import net.minestom.server.item.Material
 import net.minestom.server.timer.TaskSchedule
 import net.sinender.common.action.Action
 import net.sinender.common.action.ActionEnum
 import net.sinender.common.action.ActionProperty
 import net.sinender.common.feature.npc.events.NpcEventType
+import net.sinender.common.feature.npc.menu.NpcEditMenu
 import net.sinender.common.managers.Sandbox
+import net.sinender.common.menu.MenuItem
+import net.sinender.common.menu.menuItem
 import org.bson.Document
 import kotlin.random.Random
 
@@ -26,15 +28,15 @@ abstract class NpcEntity(
     var entityType: EntityType = EntityType.PLAYER,
 ) {
     var name: String = listOf(
-        "§aAlex",
-        "§2Baldrick",
-        "§cD§6i§ed§ad§by",
-        "§5Ben Dover",
-        "§7Loading...",
-        "§eUpdog",
-        "§bCookie Monster",
-        "§c❤"
-    )[Random.nextInt(9)]
+        "<green>Alex",
+        "<dark_red>Baldrick",
+        "<rainbow>Diddy",
+        "<dark_purple>Ben Dover",
+        "<gray>Loading...",
+        "<yellow>Updog",
+        "<aqua>Cookie Monster",
+        "<red>❤"
+    )[Random.nextInt(8)]
     var lookAtPlayer: Boolean = true
     var eventActions = mutableMapOf<NpcEventType, MutableList<Action>>()
     val properties = mutableListOf<ActionProperty<*>>() //Meta data is stored using properties
@@ -45,6 +47,16 @@ abstract class NpcEntity(
         }.toMutableMap()
     }
 
+    open fun distinctMenuItem(): MenuItem {
+        var item = menuItem(Material.SKELETON_SKULL)
+            .name("<yellow>$name")
+
+        for (prop in properties) {
+            item = item.info(prop.displayName, prop.displayValue()?: continue)
+        }
+        return item
+    }
+
     abstract fun onSpawn(entityCreature: EntityCreature, sandbox: Sandbox)
     open fun startAI(entityCreature: EntityCreature): Pair<List<GoalSelector>, List<TargetSelector>> {
         // Default AI behavior
@@ -52,12 +64,14 @@ abstract class NpcEntity(
     }
 
     open fun spawn(sandbox: Sandbox) {
-        var entity = EntityCreature(entityType);
-
+        val entity = EntityCreature(entityType);
+        val pair = startAI(entity)
+        entity.addAIGroup(pair.first, pair.second)
         entity.setInstance(sandbox.instance!!, position);
         initListenerAndScheduler(entity, sandbox)
     }
 
+    val cooldowns = mutableMapOf<String, Long>()
     protected fun initListenerAndScheduler(entity: EntityCreature, sandbox: Sandbox) {
         MinecraftServer.getSchedulerManager().submitTask {
             if (lookAtPlayer) {
@@ -77,7 +91,7 @@ abstract class NpcEntity(
         eventActions.forEach { (eventType, actions) ->
             node.addListener(eventType.clazz) { event ->
                 if (event is PlayerEntityInteractEvent && event.target == entity && event.player.isSneaking) {
-                    TODO("Open npc menu and make sure there is a cooldown for the stuff below")
+                    NpcEditMenu(this, sandbox).open(event.player)
                 }
                 actions.forEach { action ->
                     if (event is PlayerEntityInteractEvent) {
@@ -102,7 +116,16 @@ abstract class NpcEntity(
         document["position"] = Document("x", position.x).append("y", position.y).append("z", position.z)
         document["name"] = name
         document["lookAtPlayer"] = lookAtPlayer
-
+        // Save actions
+        val actionsDoc = Document()
+        eventActions.forEach { (eventType, actions) ->
+            val actionsList = ArrayList<Document>()
+            actions.forEach { action ->
+                actionsList.add(action.toDocument())
+            }
+            actionsDoc[eventType.name] = actionsList
+        }
+        document["actions"] = actionsDoc
         val propertiesDoc = Document()
         properties.forEach {
             propertiesDoc[it.id] = it.toValue()
@@ -119,7 +142,16 @@ abstract class NpcEntity(
         lookAtPlayer = document.getBoolean("lookAtPlayer")
 
         // Load actions
-
+        val actionsDoc = document.get("actions", Document::class.java)
+        eventActions.forEach { (eventType, actions) ->
+            val actionsList = actionsDoc.get(eventType.name, ArrayList::class.java) as List<Document>
+            actionsList.forEach { actionDoc ->
+                val action = ActionEnum.fromId(actionDoc.getString("id"))?.fromDocument(actionDoc)
+                if (action != null) {
+                    actions.add(action)
+                }
+            }
+        }
 
         // Load properties
         val propertiesDoc = document.get("properties", Document::class.java)

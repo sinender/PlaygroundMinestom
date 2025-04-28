@@ -6,24 +6,26 @@ import net.sinender.common.managers.getSandbox
 import net.sinender.common.menu.*
 import net.minestom.server.entity.Player
 import net.minestom.server.inventory.InventoryType
+import net.sinender.common.feature.npc.NpcEntity
+import net.sinender.common.feature.npc.menu.NpcEditMenu
+import net.sinender.common.managers.Sandbox
 import net.sinender.utils.PaginationList
 import java.util.HashMap
 
-class NpcEventActionsMenu : PaginationMenu(
-    "Npc Event Actions",
+class NpcEventActionsMenu(
+    val npc: NpcEntity,
+    val sandbox: Sandbox
+) : PaginationMenu(
+    "Event Actions",
     InventoryType.CHEST_6_ROW
 ), Backable {
     override fun paginationList(player: Player): PaginationList<MenuItem>? {
-        val sandbox = player.getSandbox() ?: return null
-        val eventActions = sandbox.eventsList ?: HashMap();
+        val eventActions = npc.eventActions;
         val menuItems = ArrayList<MenuItem>()
         for (event in NpcEventType.entries) {
-            if (!eventActions.contains(event.name)) {
-                eventActions[event.name] = ArrayList()
-            }
             val menuItem = event.menuItem.clone()
             menuItem.action = {
-                ActionsMenu(eventActions[event.name] ?: ArrayList(), this).open(player)
+                ActionsMenu(eventActions[event] ?: ArrayList(), this).open(player)
             }
             menuItems.add(menuItem)
         }
@@ -32,10 +34,10 @@ class NpcEventActionsMenu : PaginationMenu(
     }
 
     override fun back(player: Player) {
-        SystemsMenu().open(player)
+        NpcEditMenu(npc, sandbox).open(player)
     }
 
     override fun backName(player: Player): String {
-        return "Systems Menu"
+        return "Edit NPC: ${npc.name}"
     }
 }

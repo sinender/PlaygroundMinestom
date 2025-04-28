@@ -17,8 +17,10 @@ class CancelEvent: Action(
 ) {
 
     override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
-        val cancellableEvent: CancellableEvent = event as CancellableEvent
-        cancellableEvent.isCancelled = true
+        if (event !is CancellableEvent) {
+            return
+        }
+        event.isCancelled = true
     }
 
     override fun requiresEvent(): Boolean {

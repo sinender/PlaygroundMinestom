@@ -1,16 +1,18 @@
 package net.sinender.utils
 
-import net.minestom.server.entity.Entity
-import net.minestom.server.entity.EntityCreature
-import net.minestom.server.entity.EntityType
-import net.minestom.server.entity.GameMode
-import net.minestom.server.entity.Metadata
-import net.minestom.server.entity.Player
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import net.minestom.server.MinecraftServer
+import net.minestom.server.entity.*
 import net.minestom.server.network.packet.server.play.EntityMetaDataPacket
 import net.minestom.server.network.packet.server.play.PlayerInfoRemovePacket
 import net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket
-import net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket.Property
 import net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket.Entry
+import net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket.Property
+import net.minestom.server.scoreboard.Team
+
 
 class PlaybackPlayer(
     private val username: String,
@@ -29,22 +31,23 @@ class PlaybackPlayer(
         }
         val entry = Entry(
             uuid,
-            username,
+            removeColor(username),
             properties,
             false,
             0,
             GameMode.SURVIVAL,
-            null,
+            Component.text("Minestom", TextColor.color(0xff6c33)),
             null,
             1
         )
         player.sendPacket(PlayerInfoUpdatePacket(PlayerInfoUpdatePacket.Action.ADD_PLAYER, entry))
-
+        setNoGravity(true)
         // Spawn the player entity
         super.updateNewViewer(player)
-
         // Enable skin layers
-        player.sendPackets(EntityMetaDataPacket(entityId, mapOf(17 to Metadata.Byte(127.toByte()))))
+        player.sendPackets(EntityMetaDataPacket(entityId, mapOf(
+            3 to Metadata.Boolean(true),
+        )))
     }
 
     override fun updateOldViewer(player: Player) {

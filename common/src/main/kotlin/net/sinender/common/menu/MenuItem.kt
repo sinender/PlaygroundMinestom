@@ -44,6 +44,11 @@ class MenuItem (
         return this
     }
 
+    fun itemStack(item: ItemStack): MenuItem {
+        this.item = item
+        return this
+    }
+
     fun action(clickType: ClickType, action: String): MenuItem {
         actions = actions + (clickType to action)
         return this
@@ -139,5 +144,5 @@ class MenuItem (
     }
 }
 
-fun menuItem(item: ItemStack, action: (event: InventoryPreClickEvent) -> Unit) = MenuItem(item, action)
-fun menuItem(material: Material, action: (event: InventoryPreClickEvent) -> Unit) = MenuItem(ItemStack.of(material), action)
+fun menuItem(item: ItemStack, action: (event: InventoryPreClickEvent) -> Unit = {}) = MenuItem(item, action)
+fun menuItem(material: Material, action: (event: InventoryPreClickEvent) -> Unit = {}) = MenuItem(ItemStack.of(material), action)

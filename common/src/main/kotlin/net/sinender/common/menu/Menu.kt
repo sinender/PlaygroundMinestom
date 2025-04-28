@@ -47,6 +47,10 @@ abstract class Menu(
         }
     }
 
+    fun slot(row: Int, column: Int): Int {
+        return (row * 9) + column
+    }
+
     fun clearItems(player: Player) {
         items.clear()
 

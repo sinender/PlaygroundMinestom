@@ -28,6 +28,6 @@ fun createMenuItem(material: Material, name: String, description: String = "<red
     ) {
 
     }.name("<green>${name}")
-     .description("Execute an action when $description")
+     .description("Execute actions when $description")
      .action(ClickType.LEFT_CLICK, "to edit")
 }
