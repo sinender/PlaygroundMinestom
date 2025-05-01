@@ -25,6 +25,8 @@ dependencies {
     implementation(libs.mccoroutineMinestomApi)
     implementation(libs.mccoroutineMinestomCore)
     implementation(libs.kotlinxCoroutines)
+
+    implementation("com.github.TogAr2:MinestomPvP:ba527ce0f1")
 }
 
 application {

@@ -38,6 +38,11 @@ fun colorize(message: String): Component {
     )
 }
 
+fun removeColor(message: String): String {
+    return MiniMessage.miniMessage().stripTags(message)
+}
+
+
 fun brightness(color: TextColor, factor: Double): TextColor {
     val red = min(255.0, color.red() * factor).toInt()
     val green = min(255.0, color.green() * factor).toInt()

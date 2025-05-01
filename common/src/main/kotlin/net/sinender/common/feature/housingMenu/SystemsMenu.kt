@@ -1,6 +1,6 @@
 package net.sinender.common.feature.housingMenu
 
-import net.sinender.common.feature.events.EventActionsMenu
+import net.sinender.common.feature.npc.events.NpcEventActionsMenu
 import net.sinender.common.menu.Backable
 import net.sinender.common.menu.Menu
 import net.sinender.common.menu.menuItem
@@ -8,6 +8,7 @@ import net.minestom.server.entity.Player
 import net.minestom.server.inventory.InventoryType
 import net.minestom.server.inventory.click.ClickType
 import net.minestom.server.item.Material
+import net.sinender.common.feature.events.EventActionsMenu
 
 class SystemsMenu : Menu(
     "Systems",

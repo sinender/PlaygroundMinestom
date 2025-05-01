@@ -11,7 +11,13 @@ enum class EventType(
     val clazz: Class<out PlayerEvent>,
     val menuItem: MenuItem,
 ) {
-    BLOCK_BREAK(PlayerBlockBreakEvent::class.java, createMenuItem(Material.DIAMOND_PICKAXE, "Block Break", "a block is broken by a player")),
+    BLOCK_BREAK(PlayerBlockBreakEvent::class.java,
+        createMenuItem(
+            Material.DIAMOND_PICKAXE,
+            "Block Break",
+            "a block is broken by a player"
+        )
+    ),
 
     ;
 }
@@ -22,6 +28,6 @@ fun createMenuItem(material: Material, name: String, description: String = "<red
     ) {
 
     }.name("<green>${name}")
-     .description("Execute an action when $description")
+     .description("Execute actions when $description")
      .action(ClickType.LEFT_CLICK, "to edit")
 }

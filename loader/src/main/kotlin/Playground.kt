@@ -1,12 +1,15 @@
 package net.sinender.app
 
 import com.github.shynixn.mccoroutine.minestom.launch
-import net.sinender.lobby.createLobbyInstance
-import net.sinender.common.managers.loadSandboxes
-import net.sinender.common.managers.startupDatabase
+import io.github.togar2.pvp.MinestomPvP
+import io.github.togar2.pvp.feature.CombatFeatureSet
+import io.github.togar2.pvp.feature.CombatFeatures
 import net.minestom.server.MinecraftServer
 import net.minestom.server.extras.MojangAuth
 import net.sinender.common.commands.CommandInstance
+import net.sinender.common.managers.loadSandboxes
+import net.sinender.common.managers.startupDatabase
+import net.sinender.lobby.createLobbyInstance
 import org.reflections.Reflections
 import revxrsal.commands.minestom.MinestomLamp
 
@@ -17,6 +20,11 @@ fun main() {
     MojangAuth.init()
 
     createLobbyInstance()
+
+    MinestomPvP.init()
+
+    val modernVanilla: CombatFeatureSet = CombatFeatures.legacyVanilla()
+    MinecraftServer.getGlobalEventHandler().addChild(modernVanilla.createNode())
 
     // Start the server
     minecraftServer.start("0.0.0.0", 25565)

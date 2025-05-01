@@ -1,5 +1,6 @@
 package net.sinender.common.action
 
+import net.minestom.server.entity.Entity
 import net.sinender.common.managers.Sandbox
 import net.sinender.common.menu.MenuItem
 import net.minestom.server.entity.Player
@@ -9,7 +10,7 @@ import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import org.bson.Document
 
-open class Action(
+abstract class Action(
     val enum: ActionEnum,
     val name: String,
     val description: String,
@@ -18,14 +19,8 @@ open class Action(
     var comment = ""
     val properties = mutableListOf<ActionProperty<*>>()
 
-    open fun execute(player: Player, sandbox: Sandbox) {
-        // Do nothing
-    }
-
     // this would work, right?
-    open fun execute(e: Event, player: Player, sandbox: Sandbox) {
-        // Do nothing
-    }
+    abstract fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?)
 
     fun createDisplayItem(): MenuItem {
         val builder = MenuItem(ItemStack.of(icon)) {
