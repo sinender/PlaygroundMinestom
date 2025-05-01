@@ -26,7 +26,7 @@ class ActionBar: Action(
     ActionEnum.ACTIONBAR,
     "Display Action Bar",
     "Sends a message through the action bar to the player.",
-    Material.NAME_TAG
+    Material.NAME_TAG,
 ) {
     init {
         property(

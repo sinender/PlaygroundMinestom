@@ -23,7 +23,7 @@ fun main() {
 
     MinestomPvP.init()
 
-    val modernVanilla: CombatFeatureSet = CombatFeatures.modernVanilla()
+    val modernVanilla: CombatFeatureSet = CombatFeatures.legacyVanilla()
     MinecraftServer.getGlobalEventHandler().addChild(modernVanilla.createNode())
 
     // Start the server

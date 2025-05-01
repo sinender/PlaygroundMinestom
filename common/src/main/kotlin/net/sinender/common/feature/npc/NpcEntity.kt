@@ -3,11 +3,13 @@ package net.sinender.common.feature.npc
 import io.github.togar2.pvp.events.PrepareAttackEvent
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
+import net.minestom.server.entity.Entity
 import net.minestom.server.entity.EntityCreature
 import net.minestom.server.entity.EntityType
 import net.minestom.server.entity.Player
 import net.minestom.server.entity.ai.GoalSelector
 import net.minestom.server.entity.ai.TargetSelector
+import net.minestom.server.event.Event
 import net.minestom.server.event.EventFilter
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.entity.EntityAttackEvent
@@ -66,7 +68,7 @@ abstract class NpcEntity(
 
         item.info("<yellow>Properties")
         for (prop in properties) {
-            item = item.info(prop.displayName, prop.displayValue()?: continue)
+            item = item.info(prop.displayName, prop.displayValue() ?: continue)
         }
         return item
     }
@@ -91,7 +93,7 @@ abstract class NpcEntity(
             if (properties.boolean("lookAtPlayer") == true) {
                 sandbox.instance!!.players.minByOrNull {
                     it.position.distance(entity.position)
-                } ?.let { player ->
+                }?.let { player ->
                     if (player.position.distance(entity.position) > 5) return@let
                     entity.lookAt(player.position.add(0.0, player.eyeHeight, 0.0))
                 }
@@ -116,29 +118,35 @@ abstract class NpcEntity(
                 }
 
                 //Handle actions
-                actions.forEach { action ->
-                    //Check special cases
-                    if (event is PrepareAttackEvent){
-                        if (event.target == entity && event.entity is Player) {
-                            action.execute(event.target, event.entity as Player, sandbox, event)
-                            return@forEach
-                        }
-                    }
-
-                    if (event is PlayerEntityInteractEvent) {
-                        if (event.target == entity) {
-                            action.execute(event.target, event.player, sandbox, event)
-                        }
-                    } else {
-                        if (event.entity == entity) {
-                            action.execute(event.entity, null, sandbox, event)
-                        }
+                var player: Player? = null
+                var target: Entity? = entity
+                if (event is PrepareAttackEvent) {
+                    if (event.target == entity && event.entity is Player) {
+                        player = event.entity as Player
+                        target = event.target
                     }
                 }
+
+                if (event is PlayerEntityInteractEvent) {
+                    if (event.target == entity) {
+                        player = event.player
+                        target = event.target
+                    }
+                }
+
+                executeActions(actions, entity, player, sandbox, event)
             }
         }
 
         MinecraftServer.getGlobalEventHandler().addChild(node)
+    }
+
+    fun executeActions(actions: MutableList<Action>, entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+        MinecraftServer.getSchedulerManager().execute {
+            actions.forEach { action ->
+                action.execute(entity, player, sandbox, event)
+            }
+        }
     }
 
     open fun toDocument(): Document {
