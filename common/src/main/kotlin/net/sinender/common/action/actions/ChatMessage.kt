@@ -1,11 +1,14 @@
 package net.sinender.common.action.actions
 
+import net.minestom.server.entity.Entity
 import net.sinender.common.action.Action
 import net.sinender.common.action.ActionEnum
 import net.sinender.common.action.properties.StringProperty
 import net.sinender.common.managers.Sandbox
 import net.minestom.server.entity.Player
+import net.minestom.server.event.Event
 import net.minestom.server.item.Material
+import net.sinender.common.action.properties.string
 import net.sinender.utils.colorize
 
 class ChatMessage: Action(
@@ -25,7 +28,7 @@ class ChatMessage: Action(
         )
     }
 
-    override fun execute(player: Player, sandbox: Sandbox) {
-        player.sendMessage(colorize(getValue("message", String::class.java)?:""))
+    override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+        player?.sendMessage(colorize(properties.string("message") ?:""))
     }
 }

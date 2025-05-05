@@ -6,6 +6,7 @@ import net.sinender.common.managers.Sandbox
 import net.minestom.server.entity.Player
 import net.minestom.server.event.inventory.InventoryPreClickEvent
 import net.minestom.server.item.Material
+import net.sinender.common.action.Action
 import net.sinender.utils.info
 import net.sinender.utils.isInteger
 import net.sinender.utils.success
@@ -25,4 +26,10 @@ class StringProperty (
             actionEditMenu.open(player)
         }
     }
+}
+
+fun List<ActionProperty<*>>.string(id: String): String? {
+    return this.filter { it.id == id }
+        .map { it.value }
+        .firstOrNull() as? String
 }
