@@ -1,7 +1,6 @@
 package net.sinender.common.action
 
 import net.sinender.common.action.actions.*
-import org.bson.Document
 
 enum class ActionEnum(
     val id: String,
@@ -22,9 +21,5 @@ enum class ActionEnum(
         fun fromId(id: String): ActionEnum? {
             return entries.firstOrNull { it.id == id }
         }
-    }
-
-    fun fromDocument(doc: Document): Action {
-        return clazz.getDeclaredConstructor().newInstance().fromDocument(doc)
     }
 }

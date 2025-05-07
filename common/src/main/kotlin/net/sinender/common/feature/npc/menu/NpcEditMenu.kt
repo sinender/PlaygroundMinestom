@@ -6,9 +6,9 @@ import net.minestom.server.inventory.click.ClickType
 import net.minestom.server.item.Material
 import net.sinender.common.feature.npc.NpcEntity
 import net.sinender.common.feature.npc.events.NpcEventActionsMenu
-import net.sinender.common.managers.Sandbox
 import net.sinender.common.menu.Menu
 import net.sinender.common.menu.menuItem
+import net.sinender.common.postgres.Sandbox
 
 class NpcEditMenu(
     private val npc: NpcEntity,

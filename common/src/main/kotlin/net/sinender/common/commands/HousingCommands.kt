@@ -9,6 +9,8 @@ import net.minestom.server.coordinate.Pos
 import net.minestom.server.entity.*
 import net.minestom.server.event.EventFilter
 import net.minestom.server.event.EventNode
+import net.minestom.server.event.player.PlayerEntityInteractEvent
+import net.minestom.server.event.player.PlayerRespawnEvent
 import net.minestom.server.event.trait.PlayerEvent
 import net.sinender.common.feature.events.EventType
 import net.sinender.common.feature.npc.npcs.PlayerNpc
@@ -22,22 +24,9 @@ import java.time.temporal.ChronoUnit
 
 class HousingCommands : CommandInstance {
     @Command("playground create")
-    suspend fun housing(actor: MinestomCommandActor) {
-        actor.requirePlayer()
-
-        var sandbox = createSandbox(actor.asPlayer()?.uuid.toString())
-
-        database?.getCollection<Sandbox>("sandboxes")?.insertOne(sandbox)
-        if (sandbox.instance == null) return actor.error(
-            "An error occurred while creating your sandbox."
-        )
-        database?.getCollection<SandboxInstance>("sandboxInstances")?.insertOne(
-            SandboxInstance(
-                sandbox.id,
-                sandbox.sandboxUUID,
-                PolarWriter.write((sandbox.instance!!.chunkLoader as PolarLoader).world())
-            )
-        )
+    suspend fun create(actor: MinestomCommandActor) {
+        var sandbox = createSandbox(actor.asPlayer()?: return actor.error("You must be a player to use this command."))
+        if (sandbox.instance == null) return actor.error("An error occurred while creating your sandbox instance.")
 
         actor.asPlayer()!!.setInstance(sandbox.instance!!, Pos(0.0, 61.0, 0.0))
         actor.asPlayer()!!.gameMode = GameMode.CREATIVE
@@ -53,7 +42,8 @@ class HousingCommands : CommandInstance {
         if (sandbox.instance == null) sandbox.loadInstance()
         if (sandbox.instance == null) return actor.error("An error occurred while teleporting to your sandbox.")
         actor.asPlayer()!!.setInstanceSafe(sandbox.instance!!, Pos(0.0, 61.0, 0.0))
-        actor.asPlayer()!!.gameMode = GameMode.CREATIVE
+        actor.asPlayer()!!.gameMode = GameMode.SURVIVAL
+
         sandbox.save()
 
         // Sandbox Event Listener
@@ -64,9 +54,23 @@ class HousingCommands : CommandInstance {
         handler.addChild(node)
         for (event in EventType.entries) {
             node.addListener(event.clazz) { e: PlayerEvent ->
-                sandbox.eventsList?.get(event.name)?.forEach { action ->
+                if (e is PlayerEntityInteractEvent) {
+                    if (e.target is Player) {
+                        sandbox.events[event.name]?.forEach { action ->
+                            action.execute(e.target, e.player, sandbox, e)
+                        }
+                    }
+                    return@addListener
+                }
+                sandbox.events.get(event.name)?.forEach { action ->
                     action.execute(e.player, e.player, sandbox, e)
                 }
+            }
+        }
+        node.addListener(PlayerRespawnEvent::class.java) { e ->
+            if (e.player.instance == sandbox.instance) {
+                e.respawnPosition = Pos(0.0, 61.0, 0.0)
+                e.player.gameMode = GameMode.SURVIVAL
             }
         }
 

@@ -8,51 +8,34 @@ import net.minestom.server.event.Event
 import net.minestom.server.item.Material
 import net.sinender.common.action.Action
 import net.sinender.common.action.ActionEnum
-import net.sinender.common.action.properties.DoubleProperty
-import net.sinender.common.action.properties.EnumProperty
-import net.sinender.common.action.properties.double
-import net.sinender.common.action.properties.enum
-import net.sinender.common.managers.Sandbox
+import net.sinender.common.action.Description
+import net.sinender.common.action.DisplayName
+import net.sinender.common.action.properties.DoublePropertyAnnotation
+import net.sinender.common.action.properties.EnumPropertyAnnotation
+import net.sinender.common.postgres.Sandbox
 import net.sinender.utils.EnumMaterial
 
-class ChangeVelocity: Action(
+data class ChangeVelocity(
+    @DisplayName("Direction") @Description("The direction to push the entity.")
+    @EnumPropertyAnnotation("ARROW")
+    val direction: PushDirection = PushDirection.FORWARD,
+    @DisplayName("Operation") @Description("The operation to use when changing the velocity.")
+    @EnumPropertyAnnotation("COMPARATOR")
+    val operation: VelocityOperation = VelocityOperation.SET,
+    @DisplayName("Value") @Description("The value to use when changing the velocity.")
+    @DoublePropertyAnnotation(
+        min = 0.1,
+        max = 100.0,
+    )
+    val value: Double = 5.0
+): Action(
     ActionEnum.CHANGE_VELOCITY,
     "Change Velocity",
     "Changes the velocity of the entity.",
     Material.SLIME_BALL
 ) {
-    init {
-        properties.addAll(listOf(
-            EnumProperty(
-                "direction",
-                "Direction",
-                "The direction to push the entity.",
-                Material.ARROW,
-                PushDirection::class.java,
-                PushDirection.FORWARD
-            ),
-            EnumProperty(
-                "operation",
-                "Operation",
-                "The operation to use when changing the velocity.",
-                Material.COMPARATOR,
-                VelocityOperation::class.java,
-                VelocityOperation.SET
-            ),
-            DoubleProperty(
-                "value",
-                "Value",
-                "The value to use when changing the velocity.",
-                5.0,
-            )
-        ))
-    }
     override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
         if (entity is LivingEntity) {
-            val direction = properties.enum<PushDirection>("direction") ?: return
-            val operation = properties.enum<VelocityOperation>("operation") ?: return
-            val value = (properties.double("value")  ?: return)
-
             val velocity = when (direction) {
                 PushDirection.FORWARD -> entity.position.direction().mul(value)
                 PushDirection.BACKWARD -> entity.position.direction().mul(-value)

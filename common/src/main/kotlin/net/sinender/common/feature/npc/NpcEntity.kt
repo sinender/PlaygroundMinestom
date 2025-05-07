@@ -12,22 +12,17 @@ import net.minestom.server.entity.ai.TargetSelector
 import net.minestom.server.event.Event
 import net.minestom.server.event.EventFilter
 import net.minestom.server.event.EventNode
-import net.minestom.server.event.entity.EntityAttackEvent
-import net.minestom.server.event.entity.EntityDamageEvent
 import net.minestom.server.event.player.PlayerEntityInteractEvent
 import net.minestom.server.item.Material
 import net.minestom.server.timer.TaskSchedule
-import net.sinender.common.action.Action
-import net.sinender.common.action.ActionEnum
-import net.sinender.common.action.ActionProperty
-import net.sinender.common.action.properties.BooleanProperty
-import net.sinender.common.action.properties.boolean
+import net.sinender.common.action.*
+import net.sinender.common.action.properties.BooleanPropertyAnnotation
 import net.sinender.common.feature.npc.events.NpcEventType
 import net.sinender.common.feature.npc.menu.NpcEditMenu
-import net.sinender.common.managers.Sandbox
 import net.sinender.common.menu.MenuItem
 import net.sinender.common.menu.menuItem
-import org.bson.Document
+import net.sinender.common.postgres.Sandbox
+import java.lang.reflect.Field
 import kotlin.random.Random
 
 abstract class NpcEntity(
@@ -46,17 +41,25 @@ abstract class NpcEntity(
         "<red>❤"
     )[Random.nextInt(8)]
     var eventActions = mutableMapOf<NpcEventType, MutableList<Action>>()
-    val properties = mutableListOf<ActionProperty<*>>() //Meta data is stored using properties
+
+    val properties: List<Pair<Field, ActionProperty<*>>>
+        get() {
+            val properties = mutableListOf<Pair<Field, ActionProperty<*>>>()
+            for (property in ActionProperties.entries) {
+                for (field in this.javaClass.fields) {
+                    if (field.isAnnotationPresent(property.annotation.java)) {
+                        properties.add(Pair(field, property))
+                    }
+                }
+            }
+            return properties
+        }
+
+    @DisplayName("Look At Player") @Description("Whether the NPC should look at the player.")
+    @BooleanPropertyAnnotation
+    var lookAtPlayer = true
 
     init {
-        properties.add(
-            BooleanProperty(
-                "lookAtPlayer",
-                "Look at player",
-                "Whether the NPC should look at the player.",
-                true,
-            )
-        )
         eventActions = NpcEventType.entries.associateWith {
             mutableListOf<Action>()
         }.toMutableMap()
@@ -67,9 +70,14 @@ abstract class NpcEntity(
             .name("<yellow>$name")
 
         item.info("<yellow>Properties")
-        for (prop in properties) {
-            item = item.info(prop.displayName, prop.displayValue() ?: continue)
+
+        for (field in this.javaClass.declaredFields) {
+            val displayName = field.getAnnotation(DisplayName::class.java)
+            if (displayName != null) {
+                item.info(displayName.value, field.displayValue(this))
+            }
         }
+
         return item
     }
 
@@ -90,7 +98,7 @@ abstract class NpcEntity(
     val cooldowns = mutableMapOf<String, Long>()
     protected fun initListenerAndScheduler(entity: EntityCreature, sandbox: Sandbox) {
         MinecraftServer.getSchedulerManager().submitTask {
-            if (properties.boolean("lookAtPlayer") == true) {
+            if (lookAtPlayer) {
                 sandbox.instance!!.players.minByOrNull {
                     it.position.distance(entity.position)
                 }?.let { player ->
@@ -146,55 +154,6 @@ abstract class NpcEntity(
             actions.forEach { action ->
                 action.execute(entity, player, sandbox, event)
             }
-        }
-    }
-
-    open fun toDocument(): Document {
-        val document = Document()
-        document["id"] = id
-        document["position"] = Document("x", position.x).append("y", position.y).append("z", position.z)
-        document["name"] = name
-        // Save actions
-        val actionsDoc = Document()
-        eventActions.forEach { (eventType, actions) ->
-            val actionsList = ArrayList<Document>()
-            actions.forEach { action ->
-                actionsList.add(action.toDocument())
-            }
-            actionsDoc[eventType.name] = actionsList
-        }
-        document["actions"] = actionsDoc
-        val propertiesDoc = Document()
-        properties.forEach {
-            propertiesDoc[it.id] = it.toValue()
-        }
-        document["properties"] = propertiesDoc
-        return document
-    }
-
-    open fun fromDocument(document: Document) {
-        id = document.getInteger("id")
-        val posDoc = document.get("position", Document::class.java)
-        position = Pos(posDoc.getDouble("x"), posDoc.getDouble("y"), posDoc.getDouble("z"))
-        name = document.getString("name")
-
-        // Load actions
-        val actionsDoc = document.get("actions", Document::class.java)
-        eventActions.forEach { (eventType, actions) ->
-            val actionsList = actionsDoc.get(eventType.name, ArrayList::class.java) as List<Document>
-            actionsList.forEach { actionDoc ->
-                val action = ActionEnum.fromId(actionDoc.getString("id"))?.fromDocument(actionDoc)
-                if (action != null) {
-                    actions.add(action)
-                }
-            }
-        }
-
-        // Load properties
-        val propertiesDoc = document.get("properties", Document::class.java)
-        properties.forEach { prop ->
-            prop.fromValue(propertiesDoc[prop.id])
-            if (prop.value == null) return@forEach
         }
     }
 }

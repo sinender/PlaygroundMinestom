@@ -1,39 +1,31 @@
 package net.sinender.common.action.actions
 
+import net.minestom.server.entity.Entity
 import net.minestom.server.entity.Player
+import net.minestom.server.event.Event
 import net.minestom.server.item.Material
 import net.sinender.common.action.Action
 import net.sinender.common.action.ActionEnum
-import net.sinender.common.action.properties.StringProperty
+import net.sinender.common.action.Description
+import net.sinender.common.action.DisplayName
+import net.sinender.common.action.properties.StringPropertyAnnotation
 import net.sinender.common.feature.stats.setStat
-import net.sinender.common.managers.Sandbox
+import net.sinender.common.postgres.Sandbox
 
-class PlayerStat: Action(
+data class PlayerStat(
+    @DisplayName("Name") @Description("The name of the stat to modify.")
+    @StringPropertyAnnotation
+    val key: String = "Kills",
+    @DisplayName("Value") @Description("The value to change the stat to.")
+    @StringPropertyAnnotation
+    val value: String = "1",
+) : Action(
     ActionEnum.PLAYER_STAT,
     "Change Player Stat",
     "Modify the value of the player's stat.",
     Material.FEATHER
 ) {
-    init {
-        property(
-            StringProperty(
-                "key",
-                "Name",
-                "The name of the stat to modify.",
-                "Kills"
-            )
-        )
-        property(
-            StringProperty(
-                "value",
-                "Value",
-                "The value to change the stat to.",
-                "1"
-            )
-        )
-    }
-
-    override fun execute(player: Player, sandbox: Sandbox) {
-        player.setStat(getValue("key", String::class.java) ?: "", getValue("value", String::class.java) ?: "")
+    override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+        player?.setStat(key, value)
     }
 }

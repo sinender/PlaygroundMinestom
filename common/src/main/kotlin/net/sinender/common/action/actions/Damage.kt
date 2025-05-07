@@ -1,6 +1,5 @@
 package net.sinender.common.action.actions
 
-import io.github.togar2.pvp.MinestomPvP
 import net.minestom.server.entity.Entity
 import net.minestom.server.entity.LivingEntity
 import net.minestom.server.entity.Player
@@ -9,29 +8,25 @@ import net.minestom.server.event.Event
 import net.minestom.server.item.Material
 import net.sinender.common.action.Action
 import net.sinender.common.action.ActionEnum
-import net.sinender.common.action.properties.IntegerProperty
-import net.sinender.common.managers.Sandbox
+import net.sinender.common.action.Description
+import net.sinender.common.action.DisplayName
+import net.sinender.common.action.properties.DoublePropertyAnnotation
+import net.sinender.common.postgres.Sandbox
 
-class DamageAction: Action(
+data class DamageAction(
+    @DisplayName("Damage") @Description("The amount of damage to deal to the entity.")
+    @DoublePropertyAnnotation
+    val damage: Double = 1.0,
+): Action(
     ActionEnum.DAMAGE,
     "Damage",
     "Damages the entity.",
     Material.DIAMOND_SWORD
 ) {
-    init {
-        properties.add(
-            IntegerProperty(
-                "damage",
-                "Damage",
-                "The amount of damage to deal to the entity.",
-                1,
-            )
-        )
-    }
     override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
         if (entity is LivingEntity) {
             entity.damage(Damage.fromPlayer(player ?: return,
-                (properties[0].value as Int).toFloat()
+                damage.toFloat()
             ))
         }
     }

@@ -21,7 +21,6 @@ dependencies {
     implementation("io.github.revxrsal:lamp.common:${libs.versions.lamp.get()}")
     implementation("io.github.revxrsal:lamp.minestom:${libs.versions.lamp.get()}")
 
-    implementation(libs.mongoKotlin)
     implementation(libs.mccoroutineMinestomApi)
     implementation(libs.mccoroutineMinestomCore)
     implementation(libs.kotlinxCoroutines)

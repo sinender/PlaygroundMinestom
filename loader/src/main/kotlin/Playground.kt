@@ -8,7 +8,7 @@ import net.minestom.server.MinecraftServer
 import net.minestom.server.extras.MojangAuth
 import net.sinender.common.commands.CommandInstance
 import net.sinender.common.managers.loadSandboxes
-import net.sinender.common.managers.startupDatabase
+import net.sinender.common.postgres.DatabaseFactory
 import net.sinender.lobby.createLobbyInstance
 import org.reflections.Reflections
 import revxrsal.commands.minestom.MinestomLamp
@@ -43,10 +43,7 @@ fun main() {
     }
 
     minecraftServer.launch {
-        startupDatabase(
-            "mongodb://localhost:27017",
-            "test"
-        )
+        DatabaseFactory.init()
 
         loadSandboxes()
     }

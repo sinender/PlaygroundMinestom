@@ -3,6 +3,7 @@ package net.sinender.common.feature.events
 import net.sinender.common.menu.MenuItem
 import net.sinender.common.menu.menuItem
 import net.minestom.server.event.player.PlayerBlockBreakEvent
+import net.minestom.server.event.player.PlayerEntityInteractEvent
 import net.minestom.server.event.trait.PlayerEvent
 import net.minestom.server.inventory.click.ClickType
 import net.minestom.server.item.Material
@@ -16,6 +17,13 @@ enum class EventType(
             Material.DIAMOND_PICKAXE,
             "Block Break",
             "a block is broken by a player"
+        )
+    ),
+    INTERACT_PLAYER(PlayerEntityInteractEvent::class.java,
+        createMenuItem(
+            Material.RABBIT_STEW,
+            "Player Interact",
+            "a player interacts with another player"
         )
     ),
 

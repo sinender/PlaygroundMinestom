@@ -1,16 +1,7 @@
 package net.sinender.common.sandbox
 
-import com.mongodb.client.model.Filters.eq
-import net.sinender.common.managers.Sandbox
-import net.sinender.common.managers.database
-import net.hollowcube.polar.AnvilPolar.*
-import net.hollowcube.polar.PolarLoader
-import net.minestom.server.MinecraftServer
-import net.minestom.server.instance.IChunkLoader
 import net.minestom.server.instance.InstanceContainer
-import net.minestom.server.instance.LightingChunk
 import net.minestom.server.instance.block.Block
-import java.nio.file.Path
 
 fun createTemplatePlatform(instanceContainer: InstanceContainer) {
     val platformSize = 15
@@ -26,14 +17,4 @@ fun createTemplatePlatform(instanceContainer: InstanceContainer) {
             if (Math.random() < 0.2) instanceContainer.setBlock(x, 61, z, Block.SHORT_GRASS)
         }
     }
-}
-
-fun Sandbox.loadInstance(chunkLoader: IChunkLoader) {
-    val instanceManager = MinecraftServer.getInstanceManager()
-    val instanceContainer = instanceManager.createInstanceContainer()
-
-    instanceContainer.chunkLoader = chunkLoader
-    instanceContainer.setChunkSupplier(::LightingChunk)
-
-    this.instance = instanceContainer
 }

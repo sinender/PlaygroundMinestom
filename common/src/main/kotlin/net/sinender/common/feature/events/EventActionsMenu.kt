@@ -7,7 +7,6 @@ import net.sinender.common.menu.*
 import net.minestom.server.entity.Player
 import net.minestom.server.inventory.InventoryType
 import net.sinender.utils.PaginationList
-import java.util.HashMap
 
 class EventActionsMenu : PaginationMenu(
     "Event Actions",
@@ -15,7 +14,7 @@ class EventActionsMenu : PaginationMenu(
 ), Backable {
     override fun paginationList(player: Player): PaginationList<MenuItem>? {
         val sandbox = player.getSandbox() ?: return null
-        val eventActions = sandbox.eventsList ?: HashMap();
+        val eventActions = sandbox.events
         val menuItems = ArrayList<MenuItem>()
         for (event in EventType.entries) {
             if (!eventActions.contains(event.name)) {
