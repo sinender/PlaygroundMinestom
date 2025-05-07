@@ -6,7 +6,7 @@
 - `utils`: has some random utility classes for random stuff that does random things :)
 
 ## Running the project
-1. [Make sure you have mongodb running locally](https://www.mongodb.com/try/download/community)
+1. [Make sure you have postgres running locally](https://www.postgresql.org/download/windows/)
 2. Navigate to /loader/src/main/kotlin/Playground.kt and run said file
 
 **OR**
