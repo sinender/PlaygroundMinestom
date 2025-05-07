@@ -6,33 +6,23 @@ import net.minestom.server.event.Event
 import net.minestom.server.item.Material
 import net.sinender.common.action.Action
 import net.sinender.common.action.ActionEnum
-import net.sinender.common.action.properties.DoubleProperty
-import net.sinender.common.action.properties.double
-import net.sinender.common.managers.Sandbox
+import net.sinender.common.action.Description
+import net.sinender.common.action.DisplayName
+import net.sinender.common.action.properties.DoublePropertyAnnotation
+import net.sinender.common.postgres.Sandbox
 
-class WaitAction: Action(
+data class WaitAction(
+    @DisplayName("Duration") @Description("The duration to wait in ticks.")
+    @DoublePropertyAnnotation
+    val duration: Double = 5.0,
+): Action(
     ActionEnum.WAIT,
     "Wait",
     "Waits for a specified amount of time.",
     Material.CLOCK
 ) {
-    init {
-        properties.add(
-            DoubleProperty(
-                "duration",
-                "Duration",
-                "The duration to wait in ticks.",
-                5.0,
-            )
-        )
-    }
 
     override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
-        val duration = properties.double("duration") ?: return
         Thread.sleep((duration * 50).toLong()) // Convert ticks to milliseconds
-    }
-
-    override fun requiresEvent(): Boolean {
-        return false
     }
 }

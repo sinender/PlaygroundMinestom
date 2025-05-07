@@ -1,7 +1,6 @@
 package net.sinender.common.action
 
 import net.sinender.common.action.actions.*
-import org.bson.Document
 
 enum class ActionEnum(
     val id: String,
@@ -14,15 +13,13 @@ enum class ActionEnum(
     DAMAGE("damage", DamageAction::class.java),
     CHANGE_VELOCITY("change_velocity", ChangeVelocity::class.java),
     WAIT("wait", WaitAction::class.java),
+    PLAYER_STAT("player_stat", PlayerStat::class.java),
+    GLOBAL_STAT("global_stat", GlobalStat::class.java),
     ;
 
     companion object {
         fun fromId(id: String): ActionEnum? {
             return entries.firstOrNull { it.id == id }
         }
-    }
-
-    fun fromDocument(doc: Document): Action {
-        return clazz.getDeclaredConstructor().newInstance().fromDocument(doc)
     }
 }

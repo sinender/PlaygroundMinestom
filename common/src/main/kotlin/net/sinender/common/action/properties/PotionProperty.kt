@@ -3,7 +3,6 @@ package net.sinender.common.action.properties
 import net.sinender.utils.PaginationList
 import net.sinender.common.action.ActionProperty
 import net.sinender.common.feature.actionMenu.ActionEditMenu
-import net.sinender.common.managers.Sandbox
 import net.sinender.common.menu.MenuItem
 import net.sinender.common.menu.PaginationMenu
 import net.minestom.server.entity.Player
@@ -15,15 +14,21 @@ import net.minestom.server.item.Material
 import net.minestom.server.item.component.PotionContents
 import net.minestom.server.potion.PotionEffect
 import net.minestom.server.potion.PotionType
+import net.sinender.common.menu.Menu
+import net.sinender.common.postgres.Sandbox
+import java.lang.reflect.Field
 
-class PotionProperty (
-    id: String,
-    displayName: String,
-    description: String?,
-    value: PotionEffect? = null
-): ActionProperty<PotionEffect>(id, displayName, description, Material.POTION, value) {
-    override fun runnable(event: InventoryPreClickEvent, sandbox: Sandbox, player: Player, actionEditMenu: ActionEditMenu) {
-        // imo this doesn't need an entire class dedicated to it so object whatever it's called thingy it is!
+class PotionProperty: ActionProperty<PotionEffect>(
+    PotionPropertyAnnotation::class
+) {
+    override fun runnable(
+        field: Field,
+        obj: Any,
+        event: InventoryPreClickEvent,
+        sandbox: Sandbox,
+        player: Player,
+        menu: Menu
+    ) {
         val menu = object: PaginationMenu("Select Potion") {
             override fun paginationList(player: Player): PaginationList<MenuItem> {
                 val menuItems = ArrayList<MenuItem>()
@@ -31,8 +36,8 @@ class PotionProperty (
                     val builder = MenuItem(ItemStack.of(Material.POTION)
                         .with(ItemComponent.POTION_CONTENTS, PotionContents(PotionType.fromKey(effect.name())?: PotionType.WATER))
                     ) {
-                        if (event.clickType === ClickType.LEFT_CLICK) value = effect
-                        actionEditMenu.open(player)
+                        if (event.clickType === ClickType.LEFT_CLICK) value(obj, field, effect)
+                        menu.open(player)
                     }
                     builder.name("<yellow>${effect.name()}")
                     builder.action(ClickType.LEFT_CLICK, "to add")
@@ -45,11 +50,15 @@ class PotionProperty (
         menu.open(player)
     }
 
-    override fun fromValue(value: Any?) {
-        this.value = PotionEffect.fromKey(value.toString())
-    }
-
-    override fun toValue(): Any? {
-        return value?.name()
+    override fun displayValue(value: PotionEffect?): String? {
+        if (value == null) {
+            return "&cNone"
+        }
+        return value.name()
     }
 }
+
+@Target(AnnotationTarget.FIELD)
+annotation class PotionPropertyAnnotation(
+    val material: String = "POTION",
+)

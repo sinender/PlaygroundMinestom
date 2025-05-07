@@ -10,9 +10,13 @@ shadow = "8.3.0"
 lamp = "4.0.0-rc.10"
 adventure = "4.12.0"
 polar = "1.14.0"
-mongodb = "4.10.1"
 mccoroutine = "2.21.0"
 reflections = "0.10.2"
+exposed = "0.46.0"
+postgresql = "42.5.1"
+hikariCP = "5.0.1"
+flyway = "10.8.1"
+json = "20231013"
 
 [libraries]
 kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -20,11 +24,29 @@ kotlinxCoroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", 
 minestom = { module = "net.minestom:minestom-snapshots", version.ref = "minestom" }
 advemtureMinimessage = { module = "net.kyori:adventure-text-minimessage", version.ref = "adventure" }
 polar = { module = "dev.hollowcube:polar", version.ref = "polar" }
-mongoKotlin = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongodb" }
 mccoroutineMinestomApi = { module = "com.github.shynixn.mccoroutine:mccoroutine-minestom-api", version.ref = "mccoroutine" }
 mccoroutineMinestomCore = { module = "com.github.shynixn.mccoroutine:mccoroutine-minestom-core", version.ref = "mccoroutine" }
 reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
+exposedCore = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposedDao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
+exposedJdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+exposedJson = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposed" }
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+hikariCP = { module = "com.zaxxer:HikariCP", version.ref = "hikariCP" }
+flywayCore = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
+flywayPostgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
+json = { module = "org.json:json", version.ref = "json" }
 
 [plugins]
 kotlinPluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 shadowPlugin = { id = "com.gradleup.shadow", version.ref = "shadow" }
+
+[bundles]
+exposed = [
+    "exposedCore",
+    "exposedDao",
+    "exposedJdbc",
+    "exposedJson"
+]
+
+

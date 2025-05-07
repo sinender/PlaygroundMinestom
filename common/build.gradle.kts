@@ -10,7 +10,15 @@ dependencies {
     implementation(project(":lobby"))
     implementation(libs.polar)
     implementation(libs.minestom)
-    implementation(libs.mongoKotlin)
+
+    implementation(libs.bundles.exposed)
+    implementation(libs.postgresql)
+    implementation(libs.hikariCP)
+    implementation(libs.flywayCore)
+    implementation(libs.flywayPostgresql)
+    implementation(libs.json)
+
+    implementation(libs.reflections)
 
     implementation("io.github.revxrsal:lamp.common:${libs.versions.lamp.get()}")
     implementation("io.github.revxrsal:lamp.minestom:${libs.versions.lamp.get()}")

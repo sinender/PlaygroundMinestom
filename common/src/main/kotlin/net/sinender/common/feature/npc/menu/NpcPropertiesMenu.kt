@@ -2,11 +2,11 @@ package net.sinender.common.feature.npc.menu
 
 import net.minestom.server.entity.Player
 import net.sinender.common.feature.npc.NpcEntity
-import net.sinender.common.managers.Sandbox
 import net.sinender.common.menu.Backable
 import net.sinender.common.menu.Menu
 import net.sinender.common.menu.MenuItem
 import net.sinender.common.menu.PaginationMenu
+import net.sinender.common.postgres.Sandbox
 import net.sinender.utils.PaginationList
 
 class NpcPropertiesMenu(
@@ -15,8 +15,10 @@ class NpcPropertiesMenu(
 ): PaginationMenu("Properties"), Backable {
     override fun paginationList(player: Player): PaginationList<MenuItem>? {
         return PaginationList(
-            npc.properties.map { property ->
-                property.getDisplayItem()
+            npc.properties.map {
+                val item = it.second.getDisplayItem(npc, it.first)
+                item.action = { event -> it.second.runnable(it.first, npc, event, sandbox, player, this) }
+                item
             },
             slots.size
         )

@@ -8,7 +8,7 @@ import net.minestom.server.entity.Player
 import net.minestom.server.inventory.InventoryType
 import net.sinender.common.feature.npc.NpcEntity
 import net.sinender.common.feature.npc.menu.NpcEditMenu
-import net.sinender.common.managers.Sandbox
+import net.sinender.common.postgres.Sandbox
 import net.sinender.utils.PaginationList
 import java.util.HashMap
 
