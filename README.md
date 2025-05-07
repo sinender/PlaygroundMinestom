@@ -10,8 +10,8 @@
 2. Navigate to /loader/src/main/kotlin/Playground.kt and run said file
 
 **OR**
-2. In terminal: `./gradlew :loader:shadowJar`
-3. Run the output JAR in `loader/build/libs/`
+1. In terminal: `./gradlew :loader:shadowJar`
+2. Run the output JAR in `loader/build/libs/`
 
 ## Contributing
 - Clone, run, be cool and do stuff :)
