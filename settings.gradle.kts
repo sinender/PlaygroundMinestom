@@ -27,3 +27,4 @@ include(":common")
 include(":lobby")
 
 rootProject.name = "PlaygroundMinestorm"
+include("minilang")

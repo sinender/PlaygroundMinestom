@@ -8,6 +8,7 @@ dependencies {
     // Apply the kotlinx bundle of dependencies from the version catalog (`gradle/libs.versions.toml`).
     implementation(project(":utils"))
     implementation(project(":lobby"))
+    implementation(project(":minilang"))
     implementation(libs.polar)
     implementation(libs.minestom)
 
