@@ -55,23 +55,6 @@ object DatabaseFactory {
         validate()
     })
 
-    fun <T : kotlin.Any> Table.jsonArray(name: String): Column<ArrayList<T>> {
-        return jsonb<ArrayList<T>>(name, serialize = { it ->
-            val jsonArray = JSONArray()
-            it.forEach {
-                jsonArray.put(it)
-            }
-            jsonArray.toString()
-        }, deserialize = {
-            val users = ArrayList<T>()
-            val jsonArray = JSONArray(it)
-            for (i in 0 until jsonArray.length()) {
-                users.add(jsonArray.get(i) as T)
-            }
-            users
-        }).default(arrayListOf())
-    }
-
     suspend fun <T> dbQuery(block: suspend () -> T): T =
         newSuspendedTransaction(Dispatchers.IO) { block() }
 }
