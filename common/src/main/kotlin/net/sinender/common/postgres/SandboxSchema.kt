@@ -36,31 +36,31 @@ class SandboxService(private val db: Database) {
             }
             events
         })
-        val playerStats = jsonb("playerStats", serialize = {
+        val playerVariables = jsonb("playerVariables", serialize = {
             gson.toJson(it)
         }, deserialize = {
             val json = JsonParser.parseString(it).asJsonObject
-            val playerStats = mutableMapOf<String, MutableMap<String, String>>()
+            val playerVariables = mutableMapOf<String, MutableMap<String, String>>()
             for (entry in json.entrySet()) {
                 val key = entry.key
                 val value = entry.value.asJsonObject
-                val stats = mutableMapOf<String, String>()
-                for (stat in value.entrySet()) {
-                    stats[stat.key] = stat.value.asString
+                val vars = mutableMapOf<String, String>()
+                for (variable in value.entrySet()) {
+                    vars[variable.key] = variable.value.asString
                 }
-                playerStats[key] = stats
+                playerVariables[key] = vars
             }
-            playerStats
+            playerVariables
         })
-        val globalStats = jsonb("globalStats", serialize = {
+        val globalVariables = jsonb("globalVariables", serialize = {
             gson.toJson(it)
         }, deserialize = {
             val json = JsonParser.parseString(it).asJsonObject
-            val globalStats = mutableMapOf<String, String>()
+            val globalVars = mutableMapOf<String, String>()
             for (entry in json.entrySet()) {
-                globalStats[entry.key] = entry.value.asString
+                globalVars[entry.key] = entry.value.asString
             }
-            globalStats
+            globalVars
         })
         override val primaryKey = PrimaryKey(id)
     }
@@ -78,8 +78,8 @@ class SandboxService(private val db: Database) {
                 it[Sandboxes.sandboxUUID] = sandboxUUID
                 it[Sandboxes.ownerUUID] = ownerUUID
                 it[Sandboxes.events] = mutableMapOf<String, MutableList<Action>>()
-                it[Sandboxes.playerStats] = mutableMapOf<String, MutableMap<String, String>>()
-                it[Sandboxes.globalStats] = mutableMapOf<String, String>()
+                it[Sandboxes.playerVariables] = mutableMapOf<String, MutableMap<String, String>>()
+                it[Sandboxes.globalVariables] = mutableMapOf<String, String>()
             }
             Sandbox(
                 row[Sandboxes.id],
@@ -87,8 +87,8 @@ class SandboxService(private val db: Database) {
                 row[Sandboxes.sandboxUUID],
                 row[Sandboxes.ownerUUID],
                 row[Sandboxes.events],
-                row[Sandboxes.playerStats],
-                row[Sandboxes.globalStats],
+                row[Sandboxes.playerVariables],
+                row[Sandboxes.globalVariables],
             )
         }
     }
@@ -98,8 +98,8 @@ class SandboxService(private val db: Database) {
             Sandboxes.update({ Sandboxes.sandboxUUID eq sandboxUUID }) {
                 it[Sandboxes.name] = sandbox.name
                 it[Sandboxes.events] = sandbox.events
-                it[Sandboxes.playerStats] = sandbox.playerStats
-                it[Sandboxes.globalStats] = sandbox.globalStats
+                it[Sandboxes.playerVariables] = sandbox.playerVariables
+                it[Sandboxes.globalVariables] = sandbox.globalVariables
             } > 0
         }
     }
@@ -113,8 +113,8 @@ class SandboxService(private val db: Database) {
                     it[Sandboxes.sandboxUUID],
                     it[Sandboxes.ownerUUID],
                     it[Sandboxes.events],
-                    it[Sandboxes.playerStats],
-                    it[Sandboxes.globalStats]
+                    it[Sandboxes.playerVariables],
+                    it[Sandboxes.globalVariables]
                 )
             }
         }
@@ -129,8 +129,8 @@ class SandboxService(private val db: Database) {
                     it[Sandboxes.sandboxUUID],
                     it[Sandboxes.ownerUUID],
                     it[Sandboxes.events],
-                    it[Sandboxes.playerStats],
-                    it[Sandboxes.globalStats]
+                    it[Sandboxes.playerVariables],
+                    it[Sandboxes.globalVariables]
                 )
             }.firstOrNull()
         }
@@ -143,8 +143,8 @@ data class Sandbox(
     val sandboxUUID: String,
     val ownerUUID: String,
     var events: MutableMap<String, MutableList<Action>> = mutableMapOf(),
-    var playerStats: MutableMap<String, MutableMap<String, String>> = mutableMapOf(),
-    var globalStats: MutableMap<String, String> = mutableMapOf()
+    var playerVariables: MutableMap<String, MutableMap<String, String>> = mutableMapOf(),
+    var globalVariables: MutableMap<String, String> = mutableMapOf()
 ) {
     var instance: InstanceContainer? = null
 }

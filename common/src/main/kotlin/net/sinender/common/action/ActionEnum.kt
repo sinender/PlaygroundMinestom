@@ -13,8 +13,8 @@ enum class ActionEnum(
     DAMAGE("damage", DamageAction::class.java),
     CHANGE_VELOCITY("change_velocity", ChangeVelocity::class.java),
     WAIT("wait", WaitAction::class.java),
-    PLAYER_STAT("player_stat", PlayerStat::class.java),
-    GLOBAL_STAT("global_stat", GlobalStat::class.java),
+    PLAYER_VAR("player_var", PlayerVar::class.java),
+    GLOBAL_VAR("global_var", GlobalVar::class.java),
     ;
 
     companion object {
