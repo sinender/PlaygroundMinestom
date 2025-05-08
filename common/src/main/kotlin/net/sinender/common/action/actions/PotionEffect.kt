@@ -15,7 +15,7 @@ import net.sinender.common.action.properties.PotionPropertyAnnotation
 import net.sinender.common.postgres.Sandbox
 
 data class PotionEffect(
-    @DisplayName("Potion Effect") @Description("What potion effect to apply")
+    @DisplayName("Potion Effect") @Description("The potion effect to apply.")
     @PotionPropertyAnnotation
     val effect: PotionEffect = PotionEffect.GLOWING,
     @DisplayName("Amplifier") @Description("The amplifier (level) of the potion.")
@@ -24,7 +24,7 @@ data class PotionEffect(
         max = 255
     )
     val amplifier: Int = 1,
-    @DisplayName("Duration") @Description("The duration of the potion effect in seconds")
+    @DisplayName("Duration") @Description("The duration of the potion effect in seconds.")
     @IntegerPropertyAnnotation(
         min = 1,
         max = 1000000

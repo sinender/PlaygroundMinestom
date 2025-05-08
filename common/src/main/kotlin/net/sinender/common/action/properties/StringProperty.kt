@@ -22,8 +22,7 @@ class StringProperty : ActionProperty<String>(
         player: Player,
         menu: Menu,
     ) {
-        player.info("<green>Please type the value you want to set for ${field.displayName()}:")
-        player.openChat(value(obj, field) ?: "") { message ->
+        player.openChat(value(obj, field) ?: "", field.displayName()) { message ->
             value(obj, field, message, player)
             menu.open(player)
         }

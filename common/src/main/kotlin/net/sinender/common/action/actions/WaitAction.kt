@@ -18,7 +18,7 @@ data class WaitAction(
 ): Action(
     ActionEnum.WAIT,
     "Wait",
-    "Waits for a specified amount of time.",
+    "Pauses action execution for a specified amount of time.",
     Material.CLOCK
 ) {
 

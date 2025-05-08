@@ -13,8 +13,7 @@ import net.sinender.common.postgres.Sandbox
 import net.sinender.utils.colorize
 
 data class ActionBar(
-    @DisplayName("Message")
-    @Description("The message to show to the player.")
+    @DisplayName("Message") @Description("The message to show to the player.")
     @StringPropertyAnnotation
     var message: String = "<yellow>Hello, world!"
 ): Action(

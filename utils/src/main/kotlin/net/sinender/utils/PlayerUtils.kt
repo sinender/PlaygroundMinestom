@@ -21,18 +21,18 @@ data class TempStorageForListener(
 
 fun Player.openChat(
     previous: String,
+    context: String? = null,
     action: (String) -> Unit,
 ) {
     this.closeInventory()
 
     var clazz = TempStorageForListener(null, null)
 
-    this.sendMessage(
-        MiniMessage.miniMessage().deserialize(
+    checkNotNull(primaryColor)
+    this.info("Enter your desired value ${if (context.isNullOrBlank()) " " else "for <color:${brightness(primaryColor, VARIABLE_BRIGHTNESS_FACTOR).asHexString()}>$context</color>"}in chat." +
             " <click:suggest_command:'${previous}'><hover:show_text:'<aqua>Click to paste previous value'><aqua>[PREVIOUS]</aqua></hover></click>" +
-                    " <click:run_command:'/cancelinput'><hover:show_text:'<red>Click to cancel'><red>[CANCEL]</red></hover></click>"
-        )
-    )
+            " <click:run_command:'/cancelinput'><hover:show_text:'<red>Click to cancel'><red>[CANCEL]</red></hover></click>")
+
     var listener = EventListener.of(PlayerChatEvent::class.java) { event ->
         if (event.player != this) return@of
         event.isCancelled = true
@@ -43,9 +43,7 @@ fun Player.openChat(
         if (event.player != this) return@of
         event.isCancelled = true
         clazz.remove()
-        this.send(
-            "<red>Input cancelled"
-        )
+        this.err("Input cancelled")
         action(previous)
     }
 

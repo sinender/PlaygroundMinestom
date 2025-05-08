@@ -9,7 +9,7 @@ package net.sinender.utils
  * Copied from Hysentials from Skyblock Sandbox Recode
  */
 class PaginationList<T> : ArrayList<T> {
-    var elementsPerPage: Int
+    private var elementsPerPage: Int
 
     constructor(collection: Collection<T>, elementsPerPage: Int) : super(collection) {
         this.elementsPerPage = elementsPerPage

@@ -30,11 +30,6 @@ fun Player.info(message: String): Component {
     return msg
 }
 
-fun info(message: String): String {
-    checkNotNull(primaryColor)
-    return "<color:" + brightness(primaryColor, ICON_BRIGHTNESS_FACTOR).asHexString() + ">ℹ</color> <primary>" + message
-}
-
 fun Player.success(message: String): Component {
     checkNotNull(successColor)
     val msg = colorize(

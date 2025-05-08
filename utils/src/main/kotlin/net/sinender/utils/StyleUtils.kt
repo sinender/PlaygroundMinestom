@@ -24,6 +24,7 @@ val warningColor = TextColor.fromHexString("#e35b5e")
 val errorColor = TextColor.fromHexString("#ad231f")
 
 const val ICON_BRIGHTNESS_FACTOR = 1.5
+const val VARIABLE_BRIGHTNESS_FACTOR = 0.8
 
 // Format minimessage string using Adventure API
 fun colorize(message: String): Component {

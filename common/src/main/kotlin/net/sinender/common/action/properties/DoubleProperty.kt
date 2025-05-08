@@ -18,8 +18,7 @@ class DoubleProperty : ActionProperty<Double>(
     DoublePropertyAnnotation::class
 ) {
     override fun runnable(field: Field, obj: Any, event: InventoryPreClickEvent, sandbox: Sandbox, player: Player, menu: Menu) {
-        player.info("<green>Please type the value you want to set for ${field.displayName()}:")
-        player.openChat(value(obj, field).toString() ?: "") { message ->
+        player.openChat(value(obj, field).toString(), field.displayName()) { message ->
             if (!message.isInteger()) {
                 player.err("The value provided is not a number.")
                 return@openChat
