@@ -8,8 +8,8 @@ dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositories {
         mavenCentral()
-        maven("https://repo.spongepowered.org/maven")
         maven("https://jitpack.io")
+        maven("https://repo.spongepowered.org/maven")
     }
 }
 
