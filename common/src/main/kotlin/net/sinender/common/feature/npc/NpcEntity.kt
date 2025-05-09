@@ -22,14 +22,38 @@ import net.sinender.common.feature.npc.menu.NpcEditMenu
 import net.sinender.common.menu.MenuItem
 import net.sinender.common.menu.menuItem
 import net.sinender.common.postgres.Sandbox
+import org.reflections.Reflections
 import java.lang.reflect.Field
 import kotlin.random.Random
+import kotlin.reflect.KClass
 
 abstract class NpcEntity(
     var id: Int = -1,
     var position: Pos = Pos(0.0, 0.0, 0.0),
     var entityType: EntityType = EntityType.PLAYER,
 ) {
+    companion object {
+        val entries = mutableMapOf<String, Class<out NpcEntity>>()
+
+        init {
+            val reflections = Reflections("net.sinender.common.feature.npc.npcs")
+            val npcClasses = reflections.getSubTypesOf(NpcEntity::class.java)
+            for (propertyClass in npcClasses) {
+                val npcEntity = propertyClass.getDeclaredConstructor().newInstance()
+                entries[npcEntity.entityType.name()] = propertyClass
+            }
+        }
+
+        fun getNpcEntity(type: String): Class<out NpcEntity>? {
+            return entries[type]
+        }
+
+        fun getCurrentID(sandbox: Sandbox): Int {
+            return sandbox.npcs.size + 1
+        }
+    }
+
+    var spawned = false
     var name: String = listOf(
         "<green>Alex",
         "<dark_red>Baldrick",
@@ -45,8 +69,12 @@ abstract class NpcEntity(
     val properties: List<Pair<Field, ActionProperty<*>>>
         get() {
             val properties = mutableListOf<Pair<Field, ActionProperty<*>>>()
-            for (property in ActionProperties.entries) {
-                for (field in this.javaClass.fields) {
+            var fields = this.javaClass.declaredFields
+            if (this.javaClass.superclass != null) {
+                fields = this.javaClass.superclass.declaredFields + fields
+            }
+            for (field in fields) {
+                for (property in ActionProperties.entries) {
                     if (field.isAnnotationPresent(property.annotation.java)) {
                         properties.add(Pair(field, property))
                     }
@@ -55,7 +83,8 @@ abstract class NpcEntity(
             return properties
         }
 
-    @DisplayName("Look At Player") @Description("Whether the NPC should look at the player.")
+    @DisplayName("Look At Player")
+    @Description("Whether the NPC should look at the player.")
     @BooleanPropertyAnnotation
     var lookAtPlayer = true
 
@@ -92,10 +121,12 @@ abstract class NpcEntity(
         val pair = startAI(entity)
         entity.addAIGroup(pair.first, pair.second)
         entity.setInstance(sandbox.instance!!, position);
+        spawned = true
         initListenerAndScheduler(entity, sandbox)
     }
 
-    val cooldowns = mutableMapOf<String, Long>()
+    @Transient
+    val cooldowns = mutableMapOf<String, HashMap<String, Long>>()
     protected fun initListenerAndScheduler(entity: EntityCreature, sandbox: Sandbox) {
         MinecraftServer.getSchedulerManager().submitTask {
             if (lookAtPlayer) {
@@ -106,6 +137,24 @@ abstract class NpcEntity(
                     entity.lookAt(player.position.add(0.0, player.eyeHeight, 0.0))
                 }
             }
+            if (entity.position.y < -64) {
+                entity.teleport(position)
+            }
+
+            if (entity.isDead) {
+                if (cooldowns.containsKey("npc")) {
+                    if (System.currentTimeMillis() - cooldowns["npc"]!!["death"]!! >= 1000) {
+                        entity.remove()
+                        spawn(sandbox)
+                        cooldowns.remove("npc")
+                        return@submitTask TaskSchedule.stop()
+                    }
+                } else {
+                    cooldowns["npc"] = HashMap()
+                    cooldowns["npc"]!!["death"] = System.currentTimeMillis()
+                }
+            }
+
             TaskSchedule.tick(1);
         }
 
@@ -115,6 +164,8 @@ abstract class NpcEntity(
         eventActions.forEach { (eventType, actions) ->
             node.addListener(eventType.clazz) { event ->
                 //Handle Cooldown
+                val cooldowns = cooldowns.getOrPut(event.entity.uuid.toString()) { HashMap() }
+
                 if (cooldowns.containsKey(eventType.name)) {
                     if (System.currentTimeMillis() - cooldowns[eventType.name]!! < eventType.cooldown) return@addListener
                 }
@@ -127,7 +178,7 @@ abstract class NpcEntity(
 
                 //Handle actions
                 var player: Player? = null
-                var target: Entity? = entity
+                var target: Entity = entity
                 if (event is PrepareAttackEvent) {
                     if (event.target == entity && event.entity is Player) {
                         player = event.entity as Player
@@ -142,7 +193,7 @@ abstract class NpcEntity(
                     }
                 }
 
-                executeActions(actions, entity, player, sandbox, event)
+                executeActions(actions, target, player, sandbox, event)
             }
         }
 
@@ -150,10 +201,8 @@ abstract class NpcEntity(
     }
 
     fun executeActions(actions: MutableList<Action>, entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
-        MinecraftServer.getSchedulerManager().execute {
-            actions.forEach { action ->
-                action.execute(entity, player, sandbox, event)
-            }
+        actions.forEach { action ->
+            action.execute(entity, player, sandbox, event)
         }
     }
 }

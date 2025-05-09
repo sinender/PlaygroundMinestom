@@ -13,6 +13,7 @@ import net.minestom.server.event.player.PlayerEntityInteractEvent
 import net.minestom.server.event.player.PlayerRespawnEvent
 import net.minestom.server.event.trait.PlayerEvent
 import net.sinender.common.feature.events.EventType
+import net.sinender.common.feature.npc.NpcEntity
 import net.sinender.common.feature.npc.npcs.PlayerNpc
 import net.sinender.utils.setInstanceSafe
 import net.sinender.utils.success
@@ -31,6 +32,8 @@ class HousingCommands : CommandInstance {
         actor.asPlayer()!!.setInstance(sandbox.instance!!, Pos(0.0, 61.0, 0.0))
         actor.asPlayer()!!.gameMode = GameMode.CREATIVE
 
+        sandbox.startEventListener()
+
         actor.success("You have been teleported to your sandbox instance!")
     }
 
@@ -45,35 +48,8 @@ class HousingCommands : CommandInstance {
         actor.asPlayer()!!.gameMode = GameMode.SURVIVAL
 
         sandbox.save()
-
-        // Sandbox Event Listener
-        var handler = MinecraftServer.getGlobalEventHandler();
-        val node: EventNode<PlayerEvent> = EventNode.value(sandbox.sandboxUUID, EventFilter.PLAYER) {
-            it.instance == sandbox.instance
-        }
-        handler.addChild(node)
-        for (event in EventType.entries) {
-            node.addListener(event.clazz) { e: PlayerEvent ->
-                if (e is PlayerEntityInteractEvent) {
-                    if (e.target is Player) {
-                        sandbox.events[event.name]?.forEach { action ->
-                            action.execute(e.target, e.player, sandbox, e)
-                        }
-                    }
-                    return@addListener
-                }
-                sandbox.events.get(event.name)?.forEach { action ->
-                    action.execute(e.player, e.player, sandbox, e)
-                }
-            }
-        }
-        node.addListener(PlayerRespawnEvent::class.java) { e ->
-            if (e.player.instance == sandbox.instance) {
-                e.respawnPosition = Pos(0.0, 61.0, 0.0)
-                e.player.gameMode = GameMode.SURVIVAL
-            }
-        }
-
+        sandbox.startEventListener()
+        sandbox.spawnNPCs()
 
         actor.success("You have been teleported to sandbox instance <dark_gray>(ID: ${id})</dark_gray>!")
     }
@@ -90,11 +66,14 @@ class HousingCommands : CommandInstance {
     @Command("playground test")
     fun test(actor: MinestomCommandActor) {
         actor.requirePlayer()
-        loadedSandboxes.filter { it.value.instance == actor.asPlayer()!!.instance }.forEach {
-            PlayerNpc(
-                1,
+        loadedSandboxes.filter { it.value.instance == actor.asPlayer()!!.instance }.forEach { (_, sandbox) ->
+            var npc = PlayerNpc(
+                NpcEntity.getCurrentID(sandbox),
                 actor.asPlayer()!!.position
-            ).spawn(it.value)
+            )
+
+            npc.spawn(sandbox)
+            sandbox.npcs.add(npc)
         }
     }
 
