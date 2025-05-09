@@ -1,6 +1,8 @@
 parser grammar MiniLangParser;
 
-options { tokenVocab=MiniLangLexer; }
+options {
+    tokenVocab = MiniLangLexer;
+}
 
 // The main entry point for parsing a line
 line
@@ -51,6 +53,8 @@ mathFunction
     | MATH ASIN LPAREN expression RPAREN                           # mathAsinFunc
     | MATH ACOS LPAREN expression RPAREN                           # mathAcosFunc
     | MATH ATAN LPAREN expression RPAREN                           # mathAtanFunc
+    | MATH FLOOR LPAREN expression RPAREN                          # mathFloorFunc
+    | MATH CEIL LPAREN expression RPAREN                           # mathCeilFunc
     | MATH LOG LPAREN expression COMMA expression RPAREN           # mathLogFunc
     | MATH RAND INT LPAREN expression COMMA expression RPAREN      # mathRandIntFunc
     | MATH RAND DEC LPAREN expression COMMA expression RPAREN      # mathRandDecFunc

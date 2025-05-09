@@ -1,6 +1,8 @@
 lexer grammar MiniLangLexer;
 
-options { caseInsensitive = false; }
+options {
+    caseInsensitive = false;
+}
 
 // Keywords
 MATH: 'math';

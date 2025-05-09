@@ -12,10 +12,16 @@ dependencies {
 
 sourceSets {
     main {
-        java.srcDirs("src/main/kotlin", "src/main/antlr", layout.buildDirectory.dir("generatedAntlr"))
+        java.srcDirs(
+            layout.projectDirectory.dir("src/main/kotlin"),
+            layout.projectDirectory.dir("src/main/antlr"),
+            layout.buildDirectory.dir("generatedAntlr")
+        )
     }
     test {
-        java.srcDirs("src/test/kotlin")
+        java.srcDirs(
+            layout.projectDirectory.dir("test/kotlin")
+        );
     }
 }
 
@@ -31,7 +37,7 @@ val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotli
     packageName = pkgName
 
     // We want visitors alongside listeners.
-    arguments = listOf("-visitor")
+    arguments = listOf("-visitor", "-no-listener")
 
     // Generated files are outputted inside build/generatedAntlr/{package-name}
     val outDir = "generatedAntlr/${pkgName.replace(".", "/")}"
