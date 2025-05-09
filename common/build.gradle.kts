@@ -29,7 +29,7 @@ dependencies {
 
     implementation("ru.brikster:glyphs-api:1.1.0")
     implementation("ru.brikster:glyphs-resources:1.1.0")
-    implementation("com.github.TogAr2:MinestomPvP:ba527ce0f1")
+    implementation(libs.minestomPVP)
 }
 
 kotlin {
