@@ -9,10 +9,18 @@ import net.hollowcube.polar.PolarLoader
 import net.hollowcube.polar.PolarReader
 import net.hollowcube.polar.PolarWriter
 import net.minestom.server.MinecraftServer
+import net.minestom.server.coordinate.Pos
+import net.minestom.server.entity.GameMode
 import net.minestom.server.entity.Player
+import net.minestom.server.event.EventFilter
+import net.minestom.server.event.EventNode
+import net.minestom.server.event.player.PlayerEntityInteractEvent
+import net.minestom.server.event.player.PlayerRespawnEvent
+import net.minestom.server.event.trait.PlayerEvent
 import net.minestom.server.instance.IChunkLoader
 import net.minestom.server.instance.InstanceContainer
 import net.minestom.server.instance.LightingChunk
+import net.sinender.common.feature.events.EventType
 import net.sinender.common.postgres.Sandbox
 import net.sinender.common.postgres.sandboxInstanceService
 import net.sinender.common.postgres.sandboxService
@@ -67,6 +75,41 @@ fun createInstance(chunkLoader: IChunkLoader): InstanceContainer {
     instanceContainer.setChunkSupplier(::LightingChunk)
 
     return instanceContainer
+}
+
+fun Sandbox.spawnNPCs() {
+    for (npc in this.npcs) {
+        if (npc.spawned) continue
+        npc.spawn(this)
+    }
+}
+
+fun Sandbox.startEventListener() {
+    var handler = MinecraftServer.getGlobalEventHandler();
+    val node: EventNode<PlayerEvent> = EventNode.value(sandboxUUID, EventFilter.PLAYER) {
+        it.instance == instance
+    }
+    handler.addChild(node)
+    for (event in EventType.entries) {
+        node.addListener(event.clazz) { e: PlayerEvent ->
+            if (e is PlayerEntityInteractEvent) {
+                if (e.target is Player) {
+                    events[event.name]?.forEach { action ->
+                        action.execute(e.target, e.player, this, e)
+                    }
+                }
+                return@addListener
+            }
+            events.get(event.name)?.forEach { action ->
+                action.execute(e.player, e.player, this, e)
+            }
+        }
+    }
+    node.addListener(PlayerRespawnEvent::class.java) { e ->
+        if (e.player.instance == instance) {
+            e.respawnPosition = Pos(0.0, 61.0, 0.0)
+        }
+    }
 }
 
 /**

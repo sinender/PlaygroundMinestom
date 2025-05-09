@@ -1,18 +1,27 @@
 package net.sinender.common.postgres
 
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
+import net.minestom.server.entity.EntityType
 import net.minestom.server.instance.InstanceContainer
+import net.minestom.server.registry.Registry.Entry
 import net.sinender.common.action.Action
 import net.sinender.common.action.ActionEnum
+import net.sinender.common.feature.npc.NpcEntity
 import net.sinender.common.postgres.DatabaseFactory.dbQuery
+import net.sinender.common.utils.ActionTypeAdapter
+import net.sinender.utils.EntityTypeTypeAdapter
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.json.jsonb
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class SandboxService(private val db: Database) {
     companion object {
-        val gson = Gson()
+        val gson = GsonBuilder()
+            .registerTypeAdapter(Action::class.java, ActionTypeAdapter())
+            .registerTypeAdapter(EntityType::class.java, EntityTypeTypeAdapter())
+            .create()
     }
     object Sandboxes: Table() {
         val id = integer("id").autoIncrement()
@@ -62,6 +71,17 @@ class SandboxService(private val db: Database) {
             }
             globalVars
         })
+        val npcs = jsonb("npcs", serialize = {
+            gson.toJson(it)
+        }, deserialize = {
+            val json = JsonParser.parseString(it).asJsonArray
+            val npcs = mutableListOf<NpcEntity>()
+            for (npc in json) {
+                val entityType = npc.asJsonObject["entityType"].asString
+                npcs.add(gson.fromJson(npc, NpcEntity.getNpcEntity(entityType)?: continue))
+            }
+            npcs
+        })
         override val primaryKey = PrimaryKey(id)
     }
 
@@ -80,6 +100,7 @@ class SandboxService(private val db: Database) {
                 it[Sandboxes.events] = mutableMapOf<String, MutableList<Action>>()
                 it[Sandboxes.playerVariables] = mutableMapOf<String, MutableMap<String, String>>()
                 it[Sandboxes.globalVariables] = mutableMapOf<String, String>()
+                it[Sandboxes.npcs] = mutableListOf<NpcEntity>()
             }
             Sandbox(
                 row[Sandboxes.id],
@@ -89,6 +110,7 @@ class SandboxService(private val db: Database) {
                 row[Sandboxes.events],
                 row[Sandboxes.playerVariables],
                 row[Sandboxes.globalVariables],
+                row[Sandboxes.npcs]
             )
         }
     }
@@ -100,6 +122,7 @@ class SandboxService(private val db: Database) {
                 it[Sandboxes.events] = sandbox.events
                 it[Sandboxes.playerVariables] = sandbox.playerVariables
                 it[Sandboxes.globalVariables] = sandbox.globalVariables
+                it[Sandboxes.npcs] = sandbox.npcs
             } > 0
         }
     }
@@ -115,6 +138,7 @@ class SandboxService(private val db: Database) {
                     it[Sandboxes.events],
                     it[Sandboxes.playerVariables],
                     it[Sandboxes.globalVariables]
+                    it[Sandboxes.npcs]
                 )
             }
         }
@@ -130,7 +154,8 @@ class SandboxService(private val db: Database) {
                     it[Sandboxes.ownerUUID],
                     it[Sandboxes.events],
                     it[Sandboxes.playerVariables],
-                    it[Sandboxes.globalVariables]
+                    it[Sandboxes.globalVariables],
+                    it[Sandboxes.npcs]
                 )
             }.firstOrNull()
         }
@@ -144,7 +169,8 @@ data class Sandbox(
     val ownerUUID: String,
     var events: MutableMap<String, MutableList<Action>> = mutableMapOf(),
     var playerVariables: MutableMap<String, MutableMap<String, String>> = mutableMapOf(),
-    var globalVariables: MutableMap<String, String> = mutableMapOf()
-) {
+    var globalVariables: MutableMap<String, String> = mutableMapOf(),
+    var npcs: MutableList<NpcEntity> = mutableListOf(),
+    ) {
     var instance: InstanceContainer? = null
 }

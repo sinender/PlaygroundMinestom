@@ -17,6 +17,7 @@ postgresql = "42.5.1"
 hikariCP = "5.0.1"
 flyway = "10.8.1"
 json = "20231013"
+minestomPVP = "master-SNAPSHOT"
 
 [libraries]
 kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -36,6 +37,7 @@ hikariCP = { module = "com.zaxxer:HikariCP", version.ref = "hikariCP" }
 flywayCore = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
 flywayPostgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 json = { module = "org.json:json", version.ref = "json" }
+minestomPVP = { module = "com.github.TogAr2:MinestomPvP", version.ref = "minestomPVP" }
 
 [plugins]
 kotlinPluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

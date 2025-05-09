@@ -22,8 +22,8 @@ abstract class Action(
     val properties: List<Pair<Field, ActionProperty<*>>>
         get() {
             val properties = mutableListOf<Pair<Field, ActionProperty<*>>>()
-            for (property in ActionProperties.entries) {
-                for (field in this.javaClass.declaredFields) {
+            for (field in this.javaClass.declaredFields) {
+                for (property in ActionProperties.entries) {
                     if (field.isAnnotationPresent(property.annotation.java)) {
                         properties.add(Pair(field, property))
                     }
