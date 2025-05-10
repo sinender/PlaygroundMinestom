@@ -21,7 +21,7 @@ sourceSets {
     test {
         java.srcDirs(
             layout.projectDirectory.dir("test/kotlin")
-        );
+        )
     }
 }
 
