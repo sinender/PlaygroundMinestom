@@ -13,10 +13,10 @@ line
 expression
     : primary                                               # primaryExprAtom // An atom can be an expression
     | expression LPAREN arguments? RPAREN                   # callExpr        // Function/method call
-    | expression DOT IDENTIFIER                             # memberAccessExpr// Member access
     | expression POWER expression                           # powerExpr       // Power (a^b)
     | expression op=(MULTIPLY | DIVIDE) expression          # mulDivExpr      // Multiplication/Division
     | expression op=(PLUS | MINUS) expression               # addSubExpr      // Addition/Subtraction
+    | IDENTIFIER                                            # identifierExpr
     ;
 
 primary
@@ -26,7 +26,7 @@ primary
     ;
 
 qualifiedIdentifier
-    : (MATH | FUN | VAR | PLAYER | IDENTIFIER) (DOT IDENTIFIER)*
+    : (MATH | FUN | VAR | PLAYER) (DOT IDENTIFIER)*
     ;
 
 // Literals: integers, doubles, strings, booleans, null

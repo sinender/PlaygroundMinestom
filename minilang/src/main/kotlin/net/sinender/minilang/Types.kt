@@ -1,5 +1,11 @@
 package net.sinender.minilang
 
+import com.strumenta.antlrkotlin.parsers.generated.MiniLangLexer
+import com.strumenta.antlrkotlin.parsers.generated.MiniLangParser
+import org.antlr.v4.kotlinruntime.CharStream
+import org.antlr.v4.kotlinruntime.CharStreams
+import org.antlr.v4.kotlinruntime.CommonTokenStream
+
 enum class DataType {
     INTEGER, DOUBLE, STRING, BOOLEAN, NULL
 }
@@ -65,11 +71,19 @@ object TypeInferrer {
 }
 
 fun main() {
-    println(TypeInferrer.inferType("5"))           // IntegerValue(value=5)
-    println(TypeInferrer.inferType("15.3"))        // DoubleValue(value=15.3)
-    println(TypeInferrer.inferType("true"))        // BooleanValue(value=true)
-    println(TypeInferrer.inferType("null"))        // NullValue
-    println(TypeInferrer.inferType("Test string")) // StringValue(value=Test string)
-    println(TypeInferrer.inferType("123FakeSt"))   // StringValue(value=123FakeSt)
-    println(TypeInferrer.inferType("player.pos.x"))// StringValue(value=player.pos.x) - This will be parsed as a string initially
+//    println(TypeInferrer.inferType("5"))           // IntegerValue(value=5)
+//    println(TypeInferrer.inferType("15.3"))        // DoubleValue(value=15.3)
+//    println(TypeInferrer.inferType("true"))        // BooleanValue(value=true)
+//    println(TypeInferrer.inferType("null"))        // NullValue
+//    println(TypeInferrer.inferType("Test string")) // StringValue(value=Test string)
+//    println(TypeInferrer.inferType("123FakeSt"))   // StringValue(value=123FakeSt)
+//    println(TypeInferrer.inferType("player.pos.x"))// StringValue(value=player.pos.x) - This will be parsed as a string initially
+
+    val inputStream: CharStream = CharStreams.fromString("\"You have \${var.global(points)} points.\"")
+    val lexer = MiniLangLexer(inputStream)
+    val tokenStream = CommonTokenStream(lexer)
+    val parser = MiniLangParser(tokenStream)
+    val tree = parser.line()
+
+    println(tree.toStringTree(parser))
 }
