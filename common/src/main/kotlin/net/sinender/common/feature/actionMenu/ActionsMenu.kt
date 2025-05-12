@@ -3,10 +3,12 @@ package feature.actionMenu
 import net.sinender.common.action.Action
 import net.sinender.common.menu.*
 import net.minestom.server.entity.Player
+import net.minestom.server.entity.attribute.Attribute
 import net.minestom.server.inventory.InventoryType
 import net.minestom.server.inventory.click.ClickType
 import net.sinender.utils.PaginationList
 import net.minestom.server.item.Material
+import net.sinender.common.feature.actionMenu.ActionEditMenu
 import net.sinender.common.feature.actionMenu.AddActionMenu
 
 class ActionsMenu(
@@ -29,7 +31,7 @@ class ActionsMenu(
         for ((index, action) in actions.withIndex()) {
             val item = action.createDisplayItem()
             item.action = { event ->
-                if (event.clickType == ClickType.LEFT_CLICK) net.sinender.common.feature.actionMenu.ActionEditMenu(
+                if (event.clickType == ClickType.LEFT_CLICK) ActionEditMenu(
                     action,
                     this
                 ).open(player)

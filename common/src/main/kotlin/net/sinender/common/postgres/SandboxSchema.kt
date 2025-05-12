@@ -137,7 +137,7 @@ class SandboxService(private val db: Database) {
                     it[Sandboxes.ownerUUID],
                     it[Sandboxes.events],
                     it[Sandboxes.playerVariables],
-                    it[Sandboxes.globalVariables]
+                    it[Sandboxes.globalVariables],
                     it[Sandboxes.npcs]
                 )
             }

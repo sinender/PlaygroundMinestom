@@ -45,7 +45,7 @@ class HousingCommands : CommandInstance {
         if (sandbox.instance == null) sandbox.loadInstance()
         if (sandbox.instance == null) return actor.error("An error occurred while teleporting to your sandbox.")
         actor.asPlayer()!!.setInstanceSafe(sandbox.instance!!, Pos(0.0, 61.0, 0.0))
-        actor.asPlayer()!!.gameMode = GameMode.SURVIVAL
+        actor.asPlayer()!!.gameMode = GameMode.CREATIVE
 
         sandbox.save()
         sandbox.startEventListener()

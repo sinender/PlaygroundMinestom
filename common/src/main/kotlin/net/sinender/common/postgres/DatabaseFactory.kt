@@ -3,6 +3,7 @@ package net.sinender.common.postgres
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.Dispatchers
+import net.minestom.server.MinecraftServer
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Database
@@ -34,7 +35,7 @@ object DatabaseFactory {
         sandboxInstanceService = SandboxInstanceService(db)
 
         if (System.getProperty("os.name").equals("Windows 11")) {
-            println("Windows 11 detected, skipping flyway migration")
+            MinecraftServer.LOGGER.warn("Windows 11 detected, skipping flyway migration")
             return
         }
         val flyway = Flyway.configure().dataSource(connectionPool).load()

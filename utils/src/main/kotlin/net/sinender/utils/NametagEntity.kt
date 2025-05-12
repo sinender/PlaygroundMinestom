@@ -1,14 +1,10 @@
 package net.sinender.utils
 
-import net.minestom.server.entity.Entity
-import net.minestom.server.entity.EntityType
-import net.minestom.server.entity.Player
 import net.minestom.server.entity.metadata.other.InteractionMeta
 import net.minestom.server.network.packet.server.play.EntityMetaDataPacket
 import net.minestom.server.tag.Tag
 import net.kyori.adventure.text.Component
-import net.minestom.server.entity.EntityPose
-import net.minestom.server.entity.Metadata
+import net.minestom.server.entity.*
 
 class NametagEntity(player: PlaybackPlayer) : Entity(EntityType.INTERACTION) {
 

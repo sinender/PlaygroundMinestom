@@ -1,14 +1,10 @@
 package net.sinender.common.feature.npc.events
 
 import io.github.togar2.pvp.events.PrepareAttackEvent
-import net.minestom.server.event.entity.EntityAttackEvent
-import net.minestom.server.event.entity.EntityDamageEvent
 import net.sinender.common.menu.MenuItem
 import net.sinender.common.menu.menuItem
-import net.minestom.server.event.player.PlayerBlockBreakEvent
 import net.minestom.server.event.player.PlayerEntityInteractEvent
 import net.minestom.server.event.trait.EntityEvent
-import net.minestom.server.event.trait.PlayerEvent
 import net.minestom.server.inventory.click.ClickType
 import net.minestom.server.item.Material
 

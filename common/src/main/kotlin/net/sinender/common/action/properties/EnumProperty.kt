@@ -28,7 +28,7 @@ class EnumProperty: ActionProperty<Enum<*>>(
                     item as? EnumMaterial ?: continue
                     val builder = menuItem(item.material?: Material.PAPER)
                     {
-                        if (event.clickType === ClickType.LEFT_CLICK) value(obj, field, item)
+                        if (event.clickType == ClickType.LEFT_CLICK) value(obj, field, item)
                         menu.open(player)
                     }
                     builder.name("<yellow>${item.name}")

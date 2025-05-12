@@ -36,7 +36,7 @@ class PotionProperty: ActionProperty<PotionEffect>(
                     val builder = MenuItem(ItemStack.of(Material.POTION)
                         .with(ItemComponent.POTION_CONTENTS, PotionContents(PotionType.fromKey(effect.name())?: PotionType.WATER))
                     ) {
-                        if (event.clickType === ClickType.LEFT_CLICK) value(obj, field, effect)
+                        if (event.clickType == ClickType.LEFT_CLICK) value(obj, field, effect)
                         menu.open(player)
                     }
                     builder.name("<yellow>${effect.name()}")

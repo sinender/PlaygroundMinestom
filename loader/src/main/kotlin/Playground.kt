@@ -6,6 +6,7 @@ import io.github.togar2.pvp.feature.CombatFeatureSet
 import io.github.togar2.pvp.feature.CombatFeatures
 import net.minestom.server.MinecraftServer
 import net.minestom.server.extras.MojangAuth
+import net.minestom.vanilla.VanillaReimplementation
 import net.sinender.common.commands.CommandInstance
 import net.sinender.common.managers.loadSandboxes
 import net.sinender.common.postgres.DatabaseFactory
@@ -20,6 +21,8 @@ fun main() {
     MojangAuth.init()
 
     createLobbyInstance()
+
+    val vri = VanillaReimplementation.hook(MinecraftServer.process())
 
     MinestomPvP.init()
 

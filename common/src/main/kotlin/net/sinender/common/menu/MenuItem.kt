@@ -7,7 +7,6 @@ import net.minestom.server.inventory.click.ClickType
 import net.minestom.server.item.ItemComponent
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
-import net.minestom.server.item.component.CustomModelData
 import net.minestom.server.item.component.EnchantmentList
 import net.minestom.server.item.enchant.Enchantment
 import net.sinender.utils.colorize
@@ -127,7 +126,7 @@ class MenuItem (
         item = item.with {
             it.lore(lore)
             it.glowing(glow)
-            if (itemModel != null) it.itemModel(itemModel!!)
+//            if (itemModel != null) it.itemModel(itemModel!!)
             it.hideExtraTooltip()
         }
         return item

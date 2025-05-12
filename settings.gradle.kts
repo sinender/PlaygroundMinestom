@@ -10,6 +10,7 @@ dependencyResolutionManagement {
         mavenCentral()
         maven("https://jitpack.io")
         maven("https://repo.spongepowered.org/maven")
+        maven("https://repo.redstone.llc/releases")
     }
 }
 
