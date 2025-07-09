@@ -23,7 +23,7 @@ data class DamageAction(
     "Damages the entity.",
     Material.DIAMOND_SWORD
 ) {
-    override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+    override suspend fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
         if (entity is LivingEntity) {
             entity.damage(Damage.fromPlayer(player ?: return,
                 damage.toFloat()

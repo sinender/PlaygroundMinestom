@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     // Apply the shared build logic from a convention plugin.
@@ -47,9 +46,16 @@ dependencies {
         implementation("net.minestom.vanilla:$module:${libs.versions.vanillaImpl.get()}")
     }
 
+    implementation("org.everbuild.blocksandstuff:blocksandstuff-common:1.2.0-SNAPSHOT")
+    implementation("org.everbuild.blocksandstuff:blocksandstuff-blocks:1.2.0-SNAPSHOT")
+    implementation("org.everbuild.blocksandstuff:blocksandstuff-fluids:1.2.0-SNAPSHOT")
+
+
     implementation(libs.mccoroutineMinestomApi)
     implementation(libs.mccoroutineMinestomCore)
     implementation(libs.kotlinxCoroutines)
+
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.1")
 
     implementation(libs.minestomPVP)
 

@@ -1,6 +1,8 @@
 package net.sinender.common.action
 
+import com.github.shynixn.mccoroutine.minestom.launch
 import com.google.gson.JsonObject
+import kotlinx.coroutines.invoke
 import net.minestom.server.entity.Entity
 import net.sinender.common.menu.MenuItem
 import net.minestom.server.entity.Player
@@ -9,6 +11,8 @@ import net.minestom.server.inventory.click.ClickType
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.sinender.common.postgres.Sandbox
+import net.sinender.common.utils.minecraftDispatcher
+import net.sinender.common.utils.minecraftServer
 import java.lang.reflect.Field
 
 abstract class Action(
@@ -32,13 +36,15 @@ abstract class Action(
             return properties
         }
 
-    // this would work, right?
-    abstract fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?)
+    open fun syncExecute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+        minecraftServer.launch {
+            execute(entity, player, sandbox, event)
+        }
+    }
+    abstract suspend fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?)
 
     fun createDisplayItem(): MenuItem {
-        val builder = MenuItem(ItemStack.of(icon)) {
-            // Will open the action editor
-        }
+        val builder = MenuItem(ItemStack.of(icon))
         builder.name("<yellow>$name")
         builder.description(comment)
         if (this.javaClass.declaredFields.isNotEmpty()) {
@@ -59,9 +65,7 @@ abstract class Action(
     }
 
     fun createAddDisplayItem(): MenuItem {
-        val builder = MenuItem(ItemStack.of(icon)) {
-            // Will open the action editor
-        }
+        val builder = MenuItem(ItemStack.of(icon))
         builder.name("<yellow>$name")
         builder.description(description)
         builder.action(ClickType.LEFT_CLICK, "to add")

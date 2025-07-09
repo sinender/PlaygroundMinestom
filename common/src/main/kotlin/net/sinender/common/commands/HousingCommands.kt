@@ -1,26 +1,27 @@
 package net.sinender.common.commands
 
-import net.sinender.common.feature.housingMenu.PlaygroundMenu
-import net.sinender.common.managers.*
-import net.hollowcube.polar.PolarLoader
-import net.hollowcube.polar.PolarWriter
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.resource.ResourcePackInfo
+import net.kyori.adventure.resource.ResourcePackRequest
+import net.kyori.adventure.resource.ResourcePackStatus
+import net.kyori.adventure.sound.Sound
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.entity.*
-import net.minestom.server.event.EventFilter
-import net.minestom.server.event.EventNode
-import net.minestom.server.event.player.PlayerEntityInteractEvent
-import net.minestom.server.event.player.PlayerRespawnEvent
-import net.minestom.server.event.trait.PlayerEvent
-import net.sinender.common.feature.events.EventType
-import net.sinender.common.feature.npc.NpcEntity
-import net.sinender.common.feature.npc.npcs.PlayerNpc
+import net.minestom.server.inventory.InventoryType
+import net.minestom.server.item.Material
+import net.minestom.server.timer.TaskSchedule
+import net.sinender.common.feature.housingMenu.PlaygroundMenu
+import net.sinender.common.managers.*
+import net.sinender.common.menu.Menu
+import net.sinender.common.menu.menuItem
 import net.sinender.utils.setInstanceSafe
 import net.sinender.utils.success
 import revxrsal.commands.annotation.Command
 import revxrsal.commands.minestom.actor.MinestomCommandActor
-import java.time.Duration
-import java.time.temporal.ChronoUnit
 
 
 class HousingCommands : CommandInstance {
@@ -63,20 +64,6 @@ class HousingCommands : CommandInstance {
         }
     }
 
-    @Command("playground test")
-    fun test(actor: MinestomCommandActor) {
-        actor.requirePlayer()
-        loadedSandboxes.filter { it.value.instance == actor.asPlayer()!!.instance }.forEach { (_, sandbox) ->
-            var npc = PlayerNpc(
-                NpcEntity.getCurrentID(sandbox),
-                actor.asPlayer()!!.position
-            )
-
-            npc.spawn(sandbox)
-            sandbox.npcs.add(npc)
-        }
-    }
-
     @Command("playground save")
     suspend fun save(actor: MinestomCommandActor) {
         actor.requirePlayer()
@@ -87,6 +74,4 @@ class HousingCommands : CommandInstance {
             actor.success("Sandbox instance <dark_gray>(ID: ${it.key})</dark_gray> has been saved!")
         }
     }
-
-
 }

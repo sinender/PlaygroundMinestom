@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import net.minestom.server.entity.EntityType
 import net.minestom.server.instance.InstanceContainer
-import net.minestom.server.registry.Registry.Entry
 import net.sinender.common.action.Action
 import net.sinender.common.action.ActionEnum
 import net.sinender.common.feature.npc.NpcEntity

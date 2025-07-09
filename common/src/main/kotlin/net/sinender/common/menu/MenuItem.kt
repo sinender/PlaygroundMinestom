@@ -1,22 +1,23 @@
 package net.sinender.common.menu
 
 import net.kyori.adventure.text.Component
+import net.minestom.server.component.DataComponents
 import net.minestom.server.event.inventory.InventoryClickEvent
 import net.minestom.server.event.inventory.InventoryPreClickEvent
 import net.minestom.server.inventory.click.ClickType
-import net.minestom.server.item.ItemComponent
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
+import net.minestom.server.item.component.CustomModelData
 import net.minestom.server.item.component.EnchantmentList
 import net.minestom.server.item.enchant.Enchantment
 import net.sinender.utils.colorize
 import net.sinender.utils.formatCapitalize
 import net.sinender.utils.wrapLoreLines
 
-class MenuItem (
+class MenuItem(
     var item: ItemStack,
-    var action: (event: InventoryPreClickEvent) -> Unit
-){
+    var action: (event: InventoryPreClickEvent) -> Unit = {}
+) {
     private var name: String? = null
     private var description: String? = null
     private var extraLore = mutableListOf<String>()
@@ -102,7 +103,7 @@ class MenuItem (
         }
 
         //If the item has a lore, we add the description to it
-        val lore = item.get(ItemComponent.LORE)?.toMutableList() ?: mutableListOf()
+        val lore = item.get(DataComponents.LORE)?.toMutableList() ?: mutableListOf()
         if (description != null) {
             lore.addAll(wrapLoreLines(colorize("<gray>$description</gray>"), textWidth))
         }
@@ -126,7 +127,7 @@ class MenuItem (
         item = item.with {
             it.lore(lore)
             it.glowing(glow)
-//            if (itemModel != null) it.itemModel(itemModel!!)
+            if (itemModel != null) it.itemModel(itemModel!!)
             it.hideExtraTooltip()
         }
         return item
@@ -149,4 +150,5 @@ class MenuItem (
 }
 
 fun menuItem(item: ItemStack, action: (event: InventoryPreClickEvent) -> Unit = {}) = MenuItem(item, action)
-fun menuItem(material: Material, action: (event: InventoryPreClickEvent) -> Unit = {}) = MenuItem(ItemStack.of(material), action)
+fun menuItem(material: Material, action: (event: InventoryPreClickEvent) -> Unit = {}) =
+    MenuItem(ItemStack.of(material), action)

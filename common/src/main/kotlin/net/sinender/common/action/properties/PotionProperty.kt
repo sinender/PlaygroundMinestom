@@ -1,5 +1,7 @@
 package net.sinender.common.action.properties
 
+import net.minestom.server.component.DataComponent
+import net.minestom.server.component.DataComponents
 import net.sinender.utils.PaginationList
 import net.sinender.common.action.ActionProperty
 import net.sinender.common.feature.actionMenu.ActionEditMenu
@@ -7,8 +9,8 @@ import net.sinender.common.menu.MenuItem
 import net.sinender.common.menu.PaginationMenu
 import net.minestom.server.entity.Player
 import net.minestom.server.event.inventory.InventoryPreClickEvent
+import net.minestom.server.inventory.click.Click.Left
 import net.minestom.server.inventory.click.ClickType
-import net.minestom.server.item.ItemComponent
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.item.component.PotionContents
@@ -34,9 +36,9 @@ class PotionProperty: ActionProperty<PotionEffect>(
                 val menuItems = ArrayList<MenuItem>()
                 for (effect in PotionEffect.values()) {
                     val builder = MenuItem(ItemStack.of(Material.POTION)
-                        .with(ItemComponent.POTION_CONTENTS, PotionContents(PotionType.fromKey(effect.name())?: PotionType.WATER))
+                        .with(DataComponents.POTION_CONTENTS, PotionContents(PotionType.fromKey(effect.name())?: PotionType.WATER))
                     ) {
-                        if (event.clickType == ClickType.LEFT_CLICK) value(obj, field, effect)
+                        if (event.click is Left) value(obj, field, effect)
                         menu.open(player)
                     }
                     builder.name("<yellow>${effect.name()}")

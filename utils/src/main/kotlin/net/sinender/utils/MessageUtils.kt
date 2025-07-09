@@ -74,6 +74,6 @@ fun Player.err(message: String): Component {
     return msg
 }
 
-fun MinestomCommandActor.err(message: String): Component {
-    return this.asPlayer()!!.err(message)
+fun MinestomCommandActor.err(message: String) {
+    this.asPlayer()!!.err(message)
 }

@@ -11,7 +11,7 @@ dependencies {
     // Project "loader" depends on project "utils". (Project paths are separated with ":", so ":utils" refers to the top-level "utils" project.)
     implementation(project(":utils"))
 
-    implementation(libs.minestom)
+    compileOnly(libs.minestom)
 
     implementation(libs.mccoroutineMinestomApi)
     implementation(libs.mccoroutineMinestomCore)

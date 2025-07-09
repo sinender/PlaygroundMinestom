@@ -34,7 +34,7 @@ data class ChangeVelocity(
     "Changes the velocity of the entity.",
     Material.SLIME_BALL
 ) {
-    override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+    override suspend fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
         if (entity is LivingEntity) {
             val velocity = when (direction) {
                 PushDirection.FORWARD -> entity.position.direction().mul(value)

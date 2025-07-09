@@ -36,7 +36,7 @@ data class PotionEffect(
     "Gives the player a potion effect.",
     Material.POTION
 ) {
-    override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+    override suspend fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
         val potion = Potion(
             effect,
             (amplifier - 1),

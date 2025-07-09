@@ -1,10 +1,10 @@
 package net.sinender.common.feature.npc.npcs
 
+import net.minestom.server.component.DataComponents
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.entity.EntityCreature
 import net.minestom.server.entity.EntityType
 import net.minestom.server.entity.PlayerSkin
-import net.minestom.server.item.ItemComponent
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.item.component.HeadProfile
@@ -40,7 +40,7 @@ class PlayerNpc(
         return super.distinctMenuItem()
             .itemStack(
                 ItemStack.of(Material.PLAYER_HEAD)
-                    .with(ItemComponent.PROFILE, HeadProfile(skinFromUUID))
+                    .with(DataComponents.PROFILE, HeadProfile(skinFromUUID))
             )
     }
 

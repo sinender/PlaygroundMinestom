@@ -22,6 +22,7 @@ import net.sinender.common.feature.npc.menu.NpcEditMenu
 import net.sinender.common.menu.MenuItem
 import net.sinender.common.menu.menuItem
 import net.sinender.common.postgres.Sandbox
+import net.sinender.common.utils.susListener
 import org.reflections.Reflections
 import java.lang.reflect.Field
 import kotlin.random.Random
@@ -162,12 +163,12 @@ abstract class NpcEntity(
             event.entity.instance == entity.instance
         }.setPriority(-1)
         eventActions.forEach { (eventType, actions) ->
-            node.addListener(eventType.clazz) { event ->
+            node.susListener(eventType.clazz) { event ->
                 //Handle Cooldown
                 val cooldowns = cooldowns.getOrPut(event.entity.uuid.toString()) { HashMap() }
 
                 if (cooldowns.containsKey(eventType.name)) {
-                    if (System.currentTimeMillis() - cooldowns[eventType.name]!! < eventType.cooldown) return@addListener
+                    if (System.currentTimeMillis() - cooldowns[eventType.name]!! < eventType.cooldown) return@susListener
                 }
                 cooldowns[eventType.name] = System.currentTimeMillis()
 
@@ -200,9 +201,13 @@ abstract class NpcEntity(
         MinecraftServer.getGlobalEventHandler().addChild(node)
     }
 
-    fun executeActions(actions: MutableList<Action>, entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
-        actions.forEach { action ->
-            action.execute(entity, player, sandbox, event)
-        }
+    private suspend fun executeActions(actions: MutableList<Action>, entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+        ActionExecutor(
+            entity,
+            player,
+            sandbox,
+            event,
+            actions
+        ).execute()
     }
 }

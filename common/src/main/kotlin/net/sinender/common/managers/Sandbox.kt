@@ -1,5 +1,7 @@
 package net.sinender.common.managers
 
+import com.github.shynixn.mccoroutine.minestom.addSuspendingListener
+import kotlinx.coroutines.asCoroutineDispatcher
 import net.sinender.common.action.Action
 import net.sinender.common.action.ActionEnum
 import kotlinx.coroutines.flow.first
@@ -15,16 +17,19 @@ import net.minestom.server.entity.Player
 import net.minestom.server.event.EventFilter
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.player.PlayerEntityInteractEvent
+import net.minestom.server.event.player.PlayerPickBlockEvent
 import net.minestom.server.event.player.PlayerRespawnEvent
 import net.minestom.server.event.trait.PlayerEvent
 import net.minestom.server.instance.IChunkLoader
 import net.minestom.server.instance.InstanceContainer
 import net.minestom.server.instance.LightingChunk
+import net.sinender.common.action.ActionExecutor
 import net.sinender.common.feature.events.EventType
 import net.sinender.common.postgres.Sandbox
 import net.sinender.common.postgres.sandboxInstanceService
 import net.sinender.common.postgres.sandboxService
 import net.sinender.common.sandbox.createTemplatePlatform
+import net.sinender.common.utils.susListener
 import java.nio.file.Path
 import java.util.*
 
@@ -92,23 +97,23 @@ fun Sandbox.startEventListener() {
     handler.addChild(node)
     for (event in EventType.entries) {
         node.addListener(event.clazz) { e: PlayerEvent ->
-            if (e is PlayerEntityInteractEvent) {
-                if (e.target is Player) {
-                    events[event.name]?.forEach { action ->
-                        action.execute(e.target, e.player, this, e)
-                    }
-                }
-                return@addListener
-            }
-            events.get(event.name)?.forEach { action ->
-                action.execute(e.player, e.player, this, e)
-            }
+            val actions = this.events[event.name] ?: return@addListener
+            ActionExecutor(
+                if (e is PlayerEntityInteractEvent) e.target else e.entity,
+                if (e is PlayerEntityInteractEvent) e.player else e.entity,
+                this,
+                e,
+                actions
+            ).execute()
         }
     }
     node.addListener(PlayerRespawnEvent::class.java) { e ->
         if (e.player.instance == instance) {
             e.respawnPosition = Pos(0.0, 61.0, 0.0)
         }
+    }
+    node.addListener(PlayerPickBlockEvent::class.java) {
+        handlePickBlock(it)
     }
 }
 

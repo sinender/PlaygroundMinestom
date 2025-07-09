@@ -20,13 +20,13 @@ class VariableCommands: CommandInstance {
             return
         }
 
-        for (instance in MinecraftServer.getInstanceManager().instances) {
-            instance.players.filter { it.username == player }.forEach {
-                actor.success("${it.username}'s Variables:")
-                for (variable in it.listVars(actor.asPlayer()!!.getSandbox())!!) {
-                    actor.sendRawMessage(Component.text("   $variable: ", successColor!!)
-                            .append(Component.text(it.getVar(variable, actor.asPlayer()!!.getSandbox()) ?: "", NamedTextColor.WHITE)))
-                }
+        val instance = actor.asPlayer()!!.getSandbox()?.instance ?: return actor.err("You need to be in a sandbox instance!")
+
+        instance.players.first { it.username.equals(player, true) }.apply {
+            actor.success("${username}'s Variables:")
+            for (variable in listVars()?: return) {
+                actor.sendRawMessage(Component.text("   $variable: ", successColor!!)
+                    .append(Component.text(getVar(variable, actor.asPlayer()!!.getSandbox()) ?: "", NamedTextColor.WHITE)))
             }
         }
     }
