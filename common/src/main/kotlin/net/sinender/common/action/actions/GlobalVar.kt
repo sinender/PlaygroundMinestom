@@ -25,7 +25,7 @@ data class GlobalVar(
     "Modify the value of a global variable.",
     Material.FEATHER
 ) {
-    override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+    override suspend fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
         sandbox.setVar(key, value)
     }
 }

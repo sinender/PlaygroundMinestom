@@ -9,7 +9,7 @@ dependencies {
     implementation(project(":utils"))
     implementation(project(":lobby"))
     implementation(libs.polar)
-    implementation(libs.minestom)
+    compileOnly(libs.minestom)
 
     implementation(libs.bundles.exposed)
     implementation(libs.postgresql)
@@ -27,9 +27,7 @@ dependencies {
     implementation(libs.mccoroutineMinestomCore)
     implementation(libs.kotlinxCoroutines)
 
-    implementation("ru.brikster:glyphs-api:1.1.0")
-    implementation("ru.brikster:glyphs-resources:1.1.0")
-    implementation(libs.minestomPVP)
+    compileOnly(libs.minestomPVP)
 }
 
 kotlin {

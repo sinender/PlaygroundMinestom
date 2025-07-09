@@ -25,7 +25,7 @@ data class PlayerVar(
     "Modify the value of the player's variable.",
     Material.FEATHER
 ) {
-    override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+    override suspend fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
         player?.setVar(key, value)
     }
 }

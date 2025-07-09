@@ -22,7 +22,7 @@ data class ChatMessage(
     "Sends a chat message to the player.",
     Material.PAPER
 ) {
-    override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+    override suspend fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
         player?.sendMessage(colorize(message))
     }
 }

@@ -22,7 +22,7 @@ data class ActionBar(
     "Sends a message through the action bar to the player.",
     Material.NAME_TAG,
 ) {
-    override fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+    override suspend fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
         player?.sendActionBar(colorize(message))
     }
 }

@@ -7,6 +7,7 @@ import net.sinender.common.menu.MenuItem
 import net.sinender.common.menu.PaginationMenu
 import net.minestom.server.entity.Player
 import net.minestom.server.event.inventory.InventoryPreClickEvent
+import net.minestom.server.inventory.click.Click.Left
 import net.minestom.server.inventory.click.ClickType
 import net.minestom.server.item.Material
 import net.sinender.common.menu.Menu
@@ -28,7 +29,7 @@ class EnumProperty: ActionProperty<Enum<*>>(
                     item as? EnumMaterial ?: continue
                     val builder = menuItem(item.material?: Material.PAPER)
                     {
-                        if (event.clickType == ClickType.LEFT_CLICK) value(obj, field, item)
+                        if (event.click is Left) value(obj, field, item)
                         menu.open(player)
                     }
                     builder.name("<yellow>${item.name}")

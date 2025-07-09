@@ -5,6 +5,8 @@ import net.sinender.common.menu.*
 import net.minestom.server.entity.Player
 import net.minestom.server.entity.attribute.Attribute
 import net.minestom.server.inventory.InventoryType
+import net.minestom.server.inventory.click.Click.Left
+import net.minestom.server.inventory.click.Click.Right
 import net.minestom.server.inventory.click.ClickType
 import net.sinender.utils.PaginationList
 import net.minestom.server.item.Material
@@ -31,11 +33,11 @@ class ActionsMenu(
         for ((index, action) in actions.withIndex()) {
             val item = action.createDisplayItem()
             item.action = { event ->
-                if (event.clickType == ClickType.LEFT_CLICK) ActionEditMenu(
+                if (event.click is Left) ActionEditMenu(
                     action,
                     this
                 ).open(player)
-                if (event.clickType == ClickType.RIGHT_CLICK) {
+                if (event.click is Right) {
                     actions.removeAt(index)
                     open(player)
                 }

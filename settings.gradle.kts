@@ -7,10 +7,13 @@ dependencyResolutionManagement {
     // Use Maven Central as the default repository (where Gradle will download dependencies) in all subprojects.
     @Suppress("UnstableApiUsage")
     repositories {
+        mavenLocal()
         mavenCentral()
         maven("https://jitpack.io")
         maven("https://repo.spongepowered.org/maven")
         maven("https://repo.redstone.llc/releases")
+        maven("https://mvn.everbuild.org/public")
+
     }
 }
 

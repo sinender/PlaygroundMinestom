@@ -1,5 +1,6 @@
 package net.sinender.common.menu
 
+import net.kyori.adventure.text.Component
 import net.minestom.server.MinecraftServer
 import net.minestom.server.entity.Player
 import net.minestom.server.event.EventFilter
@@ -18,6 +19,7 @@ abstract class Menu(
     val title: String, //Translated title
     val type: InventoryType,
 ) {
+
     protected var items = mutableMapOf<Int, MenuItem>()
     protected val slots: List<Int>
 
@@ -29,6 +31,7 @@ abstract class Menu(
             }
         }
     }
+
     protected val center get() = ((type.size / 9) / 2) * 9 - 5
 
     abstract fun setupItems(player: Player)
@@ -68,8 +71,13 @@ abstract class Menu(
         }
     }
 
-    open fun open(player: Player) {
-        val inventory = Inventory(type, colorize(title))
+    fun open(player: Player) {
+        open(player, null)
+    }
+
+    open fun open(player: Player, comp: Component?) {
+
+        val inventory = Inventory(type, comp ?: colorize(title))
         player.openInventory(inventory)
         setupItems(player)
 
