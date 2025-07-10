@@ -33,7 +33,7 @@ class ActionsMenu(
         for ((index, action) in actions.withIndex()) {
             val item = action.createDisplayItem()
             item.action = { event ->
-                if (event.click is Left) ActionEditMenu(
+                if (event.click is Left && action.properties.isNotEmpty()) ActionEditMenu(
                     action,
                     this
                 ).open(player)

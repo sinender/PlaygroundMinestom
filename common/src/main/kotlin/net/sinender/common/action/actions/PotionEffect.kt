@@ -1,5 +1,6 @@
 package net.sinender.common.action.actions
 
+import com.ezylang.evalex.data.EvaluationValue
 import net.minestom.server.entity.Entity
 import net.sinender.common.action.Action
 import net.sinender.common.action.ActionEnum
@@ -12,6 +13,7 @@ import net.sinender.common.action.Description
 import net.sinender.common.action.DisplayName
 import net.sinender.common.action.properties.IntegerPropertyAnnotation
 import net.sinender.common.action.properties.PotionPropertyAnnotation
+import net.sinender.common.feature.evalex.PGExpression
 import net.sinender.common.postgres.Sandbox
 
 data class PotionEffect(
@@ -36,7 +38,13 @@ data class PotionEffect(
     "Gives the player a potion effect.",
     Material.POTION
 ) {
-    override suspend fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+    override suspend fun execute(
+        entity: Entity,
+        player: Player?,
+        sandbox: Sandbox,
+        event: Event?,
+        expression: (String) -> PGExpression
+    ) {
         val potion = Potion(
             effect,
             (amplifier - 1),

@@ -1,5 +1,6 @@
 package net.sinender.common.action.actions
 
+import com.ezylang.evalex.data.EvaluationValue
 import net.minestom.server.MinecraftServer
 import net.minestom.server.entity.Entity
 import net.sinender.common.action.Action
@@ -8,6 +9,7 @@ import net.minestom.server.entity.Player
 import net.minestom.server.event.Event
 import net.minestom.server.event.trait.CancellableEvent
 import net.minestom.server.item.Material
+import net.sinender.common.feature.evalex.PGExpression
 import net.sinender.common.postgres.Sandbox
 
 class CancelEvent : Action(
@@ -17,14 +19,25 @@ class CancelEvent : Action(
     Material.TNT
 ) {
 
-    override fun syncExecute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+    override fun syncExecute(
+        entity: Entity, player: Player?, sandbox: Sandbox, event: Event?,
+        expression: (String) -> PGExpression
+    ): EvaluationValue? {
         if (event == null || event !is CancellableEvent) {
-            return
+            return null
         }
         event.isCancelled = true
+
+        return null
     }
 
-    override suspend fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+    override suspend fun execute(
+        entity: Entity,
+        player: Player?,
+        sandbox: Sandbox,
+        event: Event?,
+        expression: (String) -> PGExpression
+    ) {
         //Do nothing, because if its async then it will not be able to cancel the event
     }
 

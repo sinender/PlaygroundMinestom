@@ -14,7 +14,7 @@ import net.sinender.utils.colorize
 import net.sinender.utils.formatCapitalize
 import net.sinender.utils.wrapLoreLines
 
-class MenuItem(
+open class MenuItem(
     var item: ItemStack,
     var action: (event: InventoryPreClickEvent) -> Unit = {}
 ) {

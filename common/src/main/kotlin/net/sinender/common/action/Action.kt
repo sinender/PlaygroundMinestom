@@ -1,5 +1,6 @@
 package net.sinender.common.action
 
+import com.ezylang.evalex.data.EvaluationValue
 import com.github.shynixn.mccoroutine.minestom.launch
 import com.google.gson.JsonObject
 import kotlinx.coroutines.invoke
@@ -10,6 +11,7 @@ import net.minestom.server.event.Event
 import net.minestom.server.inventory.click.ClickType
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
+import net.sinender.common.feature.evalex.PGExpression
 import net.sinender.common.postgres.Sandbox
 import net.sinender.common.utils.minecraftDispatcher
 import net.sinender.common.utils.minecraftServer
@@ -36,18 +38,36 @@ abstract class Action(
             return properties
         }
 
-    open fun syncExecute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
-        minecraftServer.launch {
-            execute(entity, player, sandbox, event)
+    fun List<Pair<Field, ActionProperty<*>>>.withValue(obj: Any?): Pair<Field, ActionProperty<*>> {
+        return this.first {
+            it.first.isAccessible = true
+            val value = it.first.get(this@Action)
+            value == obj
         }
     }
-    abstract suspend fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?)
+
+    open fun syncExecute(
+        entity: Entity, player: Player?, sandbox: Sandbox, event: Event?,
+        expression: (String) -> PGExpression = { PGExpression(it, entity, player, sandbox, event) }
+    ): EvaluationValue? {
+        minecraftServer.launch {
+            execute(entity, player, sandbox, event, expression)
+        }
+
+        return null
+    }
+
+    abstract suspend fun execute(
+        entity: Entity, player: Player?, sandbox: Sandbox, event: Event?, expression: (String) -> PGExpression = {
+            PGExpression(it, entity, player, sandbox, event)
+        }
+    )
 
     fun createDisplayItem(): MenuItem {
         val builder = MenuItem(ItemStack.of(icon))
         builder.name("<yellow>$name")
         builder.description(comment)
-        if (this.javaClass.declaredFields.isNotEmpty()) {
+        if (properties.isNotEmpty()) {
             builder.info("<yellow>Settings", "")
 
             for (field in this.javaClass.declaredFields) {

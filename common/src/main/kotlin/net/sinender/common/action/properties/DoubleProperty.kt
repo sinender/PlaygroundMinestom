@@ -1,7 +1,6 @@
 package net.sinender.common.action.properties
 
 import net.sinender.common.action.ActionProperty
-import net.sinender.common.feature.actionMenu.ActionEditMenu
 import net.sinender.utils.isInteger
 import net.minestom.server.entity.Player
 import net.minestom.server.event.inventory.InventoryPreClickEvent
@@ -10,7 +9,6 @@ import net.sinender.common.action.getFieldFromAnnotation
 import net.sinender.common.menu.Menu
 import net.sinender.common.postgres.Sandbox
 import net.sinender.utils.err
-import net.sinender.utils.info
 import net.sinender.utils.openChat
 import java.lang.reflect.Field
 

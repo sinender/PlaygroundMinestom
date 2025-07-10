@@ -9,6 +9,7 @@ import net.minestom.server.inventory.InventoryType
 import net.minestom.server.inventory.click.ClickType
 import net.minestom.server.item.Material
 import net.sinender.common.feature.events.EventActionsMenu
+import net.sinender.common.feature.functions.FunctionsMenu
 
 class SystemsMenu : Menu(
     "Systems",
@@ -25,6 +26,13 @@ class SystemsMenu : Menu(
             10, menuItem(Material.COBWEB) {
                 EventActionsMenu().open(player)
             }.name("<green>Event Actions")
+                .description("")
+                .action(ClickType.LEFT_CLICK, "to edit")
+        )
+        addItem(
+            11, menuItem(Material.MAP) {
+                FunctionsMenu().open(player)
+            }.name("<green>Functions Menu")
                 .description("")
                 .action(ClickType.LEFT_CLICK, "to edit")
         )

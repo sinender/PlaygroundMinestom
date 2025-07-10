@@ -9,8 +9,24 @@ import net.sinender.common.managers.getSandbox
 import net.sinender.utils.*
 import revxrsal.commands.annotation.Command
 import revxrsal.commands.minestom.actor.MinestomCommandActor
+import java.math.BigDecimal
 
 class VariableCommands: CommandInstance {
+    private fun toString(any: Any?): String? {
+        return when (any) {
+            is String -> any
+            is Number -> if (any is Double || any is Float) {
+                String.format("%.2f", any)
+            } else if (any is BigDecimal) {
+                any.toPlainString()
+            } else {
+                any.toString()
+            }
+            is Boolean -> any.toString()
+            else -> null
+        }
+    }
+
     @Command("viewvars <player>")
     fun viewPlayerVars(actor: MinestomCommandActor, player: String) {
         actor.requirePlayer()
@@ -22,11 +38,11 @@ class VariableCommands: CommandInstance {
 
         val instance = actor.asPlayer()!!.getSandbox()?.instance ?: return actor.err("You need to be in a sandbox instance!")
 
-        instance.players.first { it.username.equals(player, true) }.apply {
+        (instance.players.firstOrNull() { it.username.equals(player, true) } ?:return).apply {
             actor.success("${username}'s Variables:")
             for (variable in listVars()?: return) {
                 actor.sendRawMessage(Component.text("   $variable: ", successColor!!)
-                    .append(Component.text(getVar(variable, actor.asPlayer()!!.getSandbox()) ?: "", NamedTextColor.WHITE)))
+                    .append(Component.text(toString(actor.asPlayer()!!.getVar(variable)) ?: "", NamedTextColor.WHITE)))
             }
         }
     }
@@ -43,7 +59,7 @@ class VariableCommands: CommandInstance {
         actor.success("Global Variables:")
         for (variable in actor.asPlayer()!!.getSandbox()!!.listVars()) {
             actor.sendRawMessage(Component.text("   $variable: ", successColor!!)
-                .append(Component.text(actor.asPlayer()!!.getSandbox()!!.getVar(variable) ?: "", NamedTextColor.WHITE)))
+                .append(Component.text(toString(actor.asPlayer()!!.getSandbox()!!.getVar(variable)) ?: "", NamedTextColor.WHITE)))
         }
     }
 }

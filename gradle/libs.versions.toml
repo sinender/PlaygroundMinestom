@@ -19,6 +19,8 @@ flyway = "10.8.1"
 json = "20231013"
 minestomPVP = "09b97d4923"
 vanillaImpl = "indev"
+evalEx = "3.6.0-SNAPSHOT"
+
 
 [libraries]
 kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -39,7 +41,7 @@ flywayCore = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
 flywayPostgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 json = { module = "org.json:json", version.ref = "json" }
 minestomPVP = { module = "io.github.togar2:MinestomPvP", version.ref = "minestomPVP" }
-vanillaImpl = { module = "net.minestom.vanilla:VanillaReimplementation", version.ref = "vanillaImpl" }
+evalEx = { module = "com.ezylang:EvalEx", version.ref = "evalEx" }
 
 [plugins]
 kotlinPluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

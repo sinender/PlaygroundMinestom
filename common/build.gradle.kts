@@ -27,6 +27,8 @@ dependencies {
     implementation(libs.mccoroutineMinestomCore)
     implementation(libs.kotlinxCoroutines)
 
+    implementation(libs.evalEx)
+
     compileOnly(libs.minestomPVP)
 }
 

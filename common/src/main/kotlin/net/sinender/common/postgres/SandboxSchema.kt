@@ -2,18 +2,40 @@ package net.sinender.common.postgres
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import net.minestom.server.entity.EntityType
 import net.minestom.server.instance.InstanceContainer
 import net.sinender.common.action.Action
 import net.sinender.common.action.ActionEnum
+import net.sinender.common.feature.functions.Function
 import net.sinender.common.feature.npc.NpcEntity
 import net.sinender.common.postgres.DatabaseFactory.dbQuery
 import net.sinender.common.utils.ActionTypeAdapter
 import net.sinender.utils.EntityTypeTypeAdapter
+import net.sinender.utils.isDouble
+import net.sinender.utils.isInt
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.json.jsonb
 import org.jetbrains.exposed.sql.transactions.transaction
+
+private val JsonElement.asAny: Any?
+    get() {
+        return when {
+            isJsonNull -> null
+            isJsonPrimitive -> when {
+                asString.isInt() -> asInt
+                asString.isDouble() -> asDouble
+                asJsonPrimitive.isBoolean -> asBoolean
+                else -> asString
+            }
+            isJsonObject -> asJsonObject.asMap().map {
+                it.key to it.value.asAny
+            }
+            isJsonArray -> asJsonArray.map { it.asAny }
+            else -> null
+        }
+    }
 
 class SandboxService(private val db: Database) {
     companion object {
@@ -48,13 +70,13 @@ class SandboxService(private val db: Database) {
             gson.toJson(it)
         }, deserialize = {
             val json = JsonParser.parseString(it).asJsonObject
-            val playerVariables = mutableMapOf<String, MutableMap<String, String>>()
+            val playerVariables = mutableMapOf<String, MutableMap<String, Any?>>()
             for (entry in json.entrySet()) {
                 val key = entry.key
                 val value = entry.value.asJsonObject
-                val vars = mutableMapOf<String, String>()
+                val vars = mutableMapOf<String, Any?>()
                 for (variable in value.entrySet()) {
-                    vars[variable.key] = variable.value.asString
+                    vars[variable.key] = variable.value.asAny
                 }
                 playerVariables[key] = vars
             }
@@ -64,11 +86,22 @@ class SandboxService(private val db: Database) {
             gson.toJson(it)
         }, deserialize = {
             val json = JsonParser.parseString(it).asJsonObject
-            val globalVars = mutableMapOf<String, String>()
+            val globalVars = mutableMapOf<String, Any?>()
             for (entry in json.entrySet()) {
-                globalVars[entry.key] = entry.value.asString
+                globalVars[entry.key] = entry.value.asAny
             }
             globalVars
+        })
+        val functions = jsonb("functions", serialize = {
+            gson.toJson(it)
+        }, deserialize = {
+            val json = JsonParser.parseString(it).asJsonArray
+            val functions = mutableListOf<Function>()
+            for (func in json) {
+                val function = gson.fromJson(func, Function::class.java)
+                functions.add(function)
+            }
+            functions
         })
         val npcs = jsonb("npcs", serialize = {
             gson.toJson(it)
@@ -96,10 +129,11 @@ class SandboxService(private val db: Database) {
                 it[Sandboxes.name] = name
                 it[Sandboxes.sandboxUUID] = sandboxUUID
                 it[Sandboxes.ownerUUID] = ownerUUID
-                it[Sandboxes.events] = mutableMapOf<String, MutableList<Action>>()
-                it[Sandboxes.playerVariables] = mutableMapOf<String, MutableMap<String, String>>()
-                it[Sandboxes.globalVariables] = mutableMapOf<String, String>()
-                it[Sandboxes.npcs] = mutableListOf<NpcEntity>()
+                it[Sandboxes.events] = mutableMapOf()
+                it[Sandboxes.playerVariables] = mutableMapOf()
+                it[Sandboxes.globalVariables] = mutableMapOf()
+                it[Sandboxes.functions] = mutableListOf<Function>()
+                it[Sandboxes.npcs] = mutableListOf()
             }
             Sandbox(
                 row[Sandboxes.id],
@@ -109,6 +143,7 @@ class SandboxService(private val db: Database) {
                 row[Sandboxes.events],
                 row[Sandboxes.playerVariables],
                 row[Sandboxes.globalVariables],
+                row[Sandboxes.functions],
                 row[Sandboxes.npcs]
             )
         }
@@ -121,6 +156,7 @@ class SandboxService(private val db: Database) {
                 it[Sandboxes.events] = sandbox.events
                 it[Sandboxes.playerVariables] = sandbox.playerVariables
                 it[Sandboxes.globalVariables] = sandbox.globalVariables
+                it[Sandboxes.functions] = sandbox.functions
                 it[Sandboxes.npcs] = sandbox.npcs
             } > 0
         }
@@ -137,6 +173,7 @@ class SandboxService(private val db: Database) {
                     it[Sandboxes.events],
                     it[Sandboxes.playerVariables],
                     it[Sandboxes.globalVariables],
+                    it[Sandboxes.functions],
                     it[Sandboxes.npcs]
                 )
             }
@@ -154,6 +191,7 @@ class SandboxService(private val db: Database) {
                     it[Sandboxes.events],
                     it[Sandboxes.playerVariables],
                     it[Sandboxes.globalVariables],
+                    it[Sandboxes.functions],
                     it[Sandboxes.npcs]
                 )
             }.firstOrNull()
@@ -167,8 +205,9 @@ data class Sandbox(
     val sandboxUUID: String,
     val ownerUUID: String,
     var events: MutableMap<String, MutableList<Action>> = mutableMapOf(),
-    var playerVariables: MutableMap<String, MutableMap<String, String>> = mutableMapOf(),
-    var globalVariables: MutableMap<String, String> = mutableMapOf(),
+    var playerVariables: MutableMap<String, MutableMap<String, Any?>> = mutableMapOf(),
+    var globalVariables: MutableMap<String, Any?> = mutableMapOf(),
+    var functions: MutableList<Function> = mutableListOf(),
     var npcs: MutableList<NpcEntity> = mutableListOf(),
     ) {
     var instance: InstanceContainer? = null

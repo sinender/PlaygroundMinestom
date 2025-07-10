@@ -1,5 +1,6 @@
 package net.sinender.common.action.actions
 
+import com.ezylang.evalex.data.EvaluationValue
 import net.minestom.server.entity.Entity
 import net.sinender.common.action.Action
 import net.sinender.common.action.ActionEnum
@@ -9,6 +10,7 @@ import net.minestom.server.item.Material
 import net.sinender.common.action.Description
 import net.sinender.common.action.DisplayName
 import net.sinender.common.action.properties.StringPropertyAnnotation
+import net.sinender.common.feature.evalex.PGExpression
 import net.sinender.common.postgres.Sandbox
 import net.sinender.utils.colorize
 
@@ -22,7 +24,13 @@ data class ChatMessage(
     "Sends a chat message to the player.",
     Material.PAPER
 ) {
-    override suspend fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
-        player?.sendMessage(colorize(message))
+    override suspend fun execute(
+        entity: Entity,
+        player: Player?,
+        sandbox: Sandbox,
+        event: Event?,
+        expression: (String) -> PGExpression
+    ) {
+        player?.sendMessage(colorize(expression(message).evaluate().stringValue))
     }
 }

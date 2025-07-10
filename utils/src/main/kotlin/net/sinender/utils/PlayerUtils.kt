@@ -29,7 +29,7 @@ fun Player.openChat(
     var clazz = TempStorageForListener(null, null)
 
     checkNotNull(primaryColor)
-    this.info("Enter your desired value ${if (context.isNullOrBlank()) " " else "for <color:${brightness(primaryColor, VARIABLE_BRIGHTNESS_FACTOR).asHexString()}>$context</color>"}in chat." +
+    this.info("Enter your desired value ${if (context.isNullOrBlank()) " " else "for <color:${brightness(primaryColor, VARIABLE_BRIGHTNESS_FACTOR).asHexString()}>$context</color>"} in chat.\n" +
             " <click:suggest_command:'${previous}'><hover:show_text:'<aqua>Click to paste previous value'><aqua>[PREVIOUS]</aqua></hover></click>" +
             " <click:run_command:'/cancelinput'><hover:show_text:'<red>Click to cancel'><red>[CANCEL]</red></hover></click>")
 

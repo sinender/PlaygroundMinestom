@@ -62,7 +62,7 @@ fun MinestomCommandActor.warning(message: String): Component {
     return this.asPlayer()!!.warning(message)
 }
 
-fun Player.err(message: String): Component {
+fun Player.err(message: String) {
     checkNotNull(errorColor)
     val msg = colorize(
         "<color:" + brightness(
@@ -71,7 +71,6 @@ fun Player.err(message: String): Component {
         ).asHexString() + ">❌</color> <error>" + message
     )
     this.sendMessage(msg)
-    return msg
 }
 
 fun MinestomCommandActor.err(message: String) {

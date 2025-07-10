@@ -1,5 +1,6 @@
 package net.sinender.common.action.actions
 
+import com.ezylang.evalex.data.EvaluationValue
 import net.minestom.server.coordinate.Vec
 import net.minestom.server.entity.Entity
 import net.minestom.server.entity.LivingEntity
@@ -12,6 +13,7 @@ import net.sinender.common.action.Description
 import net.sinender.common.action.DisplayName
 import net.sinender.common.action.properties.DoublePropertyAnnotation
 import net.sinender.common.action.properties.EnumPropertyAnnotation
+import net.sinender.common.feature.evalex.PGExpression
 import net.sinender.common.postgres.Sandbox
 import net.sinender.utils.EnumMaterial
 
@@ -34,7 +36,13 @@ data class ChangeVelocity(
     "Changes the velocity of the entity.",
     Material.SLIME_BALL
 ) {
-    override suspend fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
+    override suspend fun execute(
+        entity: Entity,
+        player: Player?,
+        sandbox: Sandbox,
+        event: Event?,
+        expression: (String) -> PGExpression
+    ) {
         if (entity is LivingEntity) {
             val velocity = when (direction) {
                 PushDirection.FORWARD -> entity.position.direction().mul(value)

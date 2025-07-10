@@ -1,5 +1,7 @@
 package net.sinender.common.action.actions
 
+import com.ezylang.evalex.Expression
+import com.ezylang.evalex.data.EvaluationValue
 import net.minestom.server.entity.Entity
 import net.minestom.server.entity.Player
 import net.minestom.server.event.Event
@@ -9,6 +11,8 @@ import net.sinender.common.action.ActionEnum
 import net.sinender.common.action.Description
 import net.sinender.common.action.DisplayName
 import net.sinender.common.action.properties.StringPropertyAnnotation
+import net.sinender.common.feature.evalex.PGExpression
+import net.sinender.common.feature.variables.getVar
 import net.sinender.common.feature.variables.setVar
 import net.sinender.common.postgres.Sandbox
 
@@ -25,7 +29,22 @@ data class GlobalVar(
     "Modify the value of a global variable.",
     Material.FEATHER
 ) {
-    override suspend fun execute(entity: Entity, player: Player?, sandbox: Sandbox, event: Event?) {
-        sandbox.setVar(key, value)
+    override suspend fun execute(
+        entity: Entity,
+        player: Player?,
+        sandbox: Sandbox,
+        event: Event?,
+        expression: (String) -> PGExpression
+    ) {
+        sandbox.setVar(
+            key,
+            expression(value).withValues(
+                mutableMapOf(
+                    "this" to sandbox.getVar(key),
+                    "value" to sandbox.getVar(key),
+                    "val" to sandbox.getVar(key)
+                )
+            )
+        )
     }
 }
